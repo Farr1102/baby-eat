@@ -28,7 +28,7 @@ router.beforeEach((to, from, next) => {
       v-model="activeTab" class="!absolute" :safe-area-inset-bottom="false"
     >
       <van-tabbar-item name="/" icon="home-o" @click="router.push('/')">
-        Home
+        首页
       </van-tabbar-item>
       <van-tabbar-item name="/growth" icon="contact-o" @click="router.push('/growth')">
         成长
