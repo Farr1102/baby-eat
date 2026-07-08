@@ -92,11 +92,11 @@ export default {
       // /api/baby/:id — GET
       const babyIdMatch = path.match(/^\/api\/baby\/(\d+)$/);
       if (babyIdMatch && method === 'GET') {
-        return handle(() => handleGetBaby(env, babyIdMatch[1]));
+        return handle(() => handleGetBaby(env, babyIdMatch[1], userId!));
       }
       if (path === '/api/baby') {
-        if (method === 'POST') return handle(() => handleCreateBaby(env, body));
-        if (method === 'PATCH') return handle(() => handleUpdateBaby(env, body));
+        if (method === 'POST') return handle(() => handleCreateBaby(env, body, userId!));
+        if (method === 'PATCH') return handle(() => handleUpdateBaby(env, body, userId!));
       }
 
       // /api/event — GET, POST, PATCH
@@ -108,27 +108,27 @@ export default {
 
       // /api/event-log/distinct — GET
       if (path === '/api/event-log/distinct' && method === 'GET') {
-        return handle(() => handleGetEventLogDistinct(env, url));
+        return handle(() => handleGetEventLogDistinct(env, url, userId!));
       }
       const eventLogIdMatch = path.match(/^\/api\/event-log\/(\d+)$/);
       if (eventLogIdMatch && method === 'DELETE') {
-        return handle(() => handleDeleteEventLog(env, eventLogIdMatch[1]));
+        return handle(() => handleDeleteEventLog(env, eventLogIdMatch[1], userId!));
       }
       if (path === '/api/event-log') {
-        if (method === 'GET') return handle(() => handleGetEventLog(env, url));
-        if (method === 'POST') return handle(() => handleCreateEventLog(env, body));
-        if (method === 'PATCH') return handle(() => handleUpdateEventLog(env, body));
+        if (method === 'GET') return handle(() => handleGetEventLog(env, url, userId!));
+        if (method === 'POST') return handle(() => handleCreateEventLog(env, body, userId!));
+        if (method === 'PATCH') return handle(() => handleUpdateEventLog(env, body, userId!));
       }
 
       // /api/moment — GET, POST, PUT
       if (path === '/api/moment') {
-        if (method === 'GET') return handle(() => handleGetMoments(env, url));
-        if (method === 'POST') return handle(() => handleCreateMoment(env, body));
-        if (method === 'PUT') return handle(() => handleUpdateMoment(env, body));
+        if (method === 'GET') return handle(() => handleGetMoments(env, url, userId!));
+        if (method === 'POST') return handle(() => handleCreateMoment(env, body, userId!));
+        if (method === 'PUT') return handle(() => handleUpdateMoment(env, body, userId!));
       }
       const momentIdMatch = path.match(/^\/api\/moment\/(\d+)$/);
       if (momentIdMatch && method === 'DELETE') {
-        return handle(() => handleDeleteMoment(env, momentIdMatch[1]));
+        return handle(() => handleDeleteMoment(env, momentIdMatch[1], userId!));
       }
 
       // /api/bucket/:name — GET

@@ -18,40 +18,44 @@ const MOCK_AVATAR = {
   updatedAt: '2024-01-01T00:00:00.000Z',
 };
 
-export async function handleGetBaby(env: Env, id: string) {
+export async function handleGetBaby(env: Env, id: string, userId: number) {
   let result = await env.DB.prepare(
-    'SELECT id, name, gender, born_at as "bornAt", avatar, created_at as "createdAt", updated_at as "updatedAt" FROM baby WHERE id = ?'
-  ).bind(id).first();
+    `SELECT id, name, gender, born_at as "bornAt", avatar,
+            created_at as "createdAt", updated_at as "updatedAt"
+     FROM baby WHERE id = ? AND user_id = ?`
+  ).bind(id, userId).first();
 
-  // If no baby exists, auto-create a default one
   if (!result) {
     const defaultName = '宝宝';
     const defaultBornAt = new Date().toISOString();
     result = await env.DB.prepare(
-      'INSERT INTO baby (name, gender, born_at) VALUES (?, 0, ?) RETURNING id, name, gender, born_at as "bornAt", avatar, created_at as "createdAt", updated_at as "updatedAt"'
-    ).bind(defaultName, defaultBornAt).first();
+      `INSERT INTO baby (name, gender, born_at, user_id)
+       VALUES (?, 0, ?, ?)
+       RETURNING id, name, gender, born_at as "bornAt", avatar,
+                created_at as "createdAt", updated_at as "updatedAt"`
+    ).bind(defaultName, defaultBornAt, userId).first();
   }
 
-  return json({
-    ...result,
-    avatar: MOCK_AVATAR,
-  });
+  return json({ ...result, avatar: MOCK_AVATAR });
 }
 
-export async function handleCreateBaby(env: Env, body: string | null) {
+export async function handleCreateBaby(env: Env, body: string | null, userId: number) {
   const data = parseJson(body);
   if (!data || !data.name || !data.bornAt) {
     return error('name and bornAt are required', 400);
   }
 
   const result = await env.DB.prepare(
-    'INSERT INTO baby (name, gender, born_at) VALUES (?, ?, ?) RETURNING id, name, gender, born_at as "bornAt", avatar, created_at as "createdAt", updated_at as "updatedAt"'
-  ).bind(data.name, data.gender ?? 0, data.bornAt).first();
+    `INSERT INTO baby (name, gender, born_at, user_id)
+     VALUES (?, ?, ?, ?)
+     RETURNING id, name, gender, born_at as "bornAt", avatar,
+              created_at as "createdAt", updated_at as "updatedAt"`
+  ).bind(data.name, data.gender ?? 0, data.bornAt, userId).first();
 
   return json({ ...result, avatar: MOCK_AVATAR }, 201);
 }
 
-export async function handleUpdateBaby(env: Env, body: string | null) {
+export async function handleUpdateBaby(env: Env, body: string | null, userId: number) {
   const data = parseJson(body);
   if (!data || !data.id) {
     return error('id is required', 400);
@@ -70,15 +74,17 @@ export async function handleUpdateBaby(env: Env, body: string | null) {
   }
 
   fields.push('updated_at = datetime(\'now\')');
-  values.push(data.id);
+  values.push(data.id, userId);
 
   await env.DB.prepare(
-    `UPDATE baby SET ${fields.join(', ')} WHERE id = ?`
+    `UPDATE baby SET ${fields.join(', ')} WHERE id = ? AND user_id = ?`
   ).bind(...values).run();
 
   const result = await env.DB.prepare(
-    'SELECT id, name, gender, born_at as "bornAt", avatar, created_at as "createdAt", updated_at as "updatedAt" FROM baby WHERE id = ?'
-  ).bind(data.id).first();
+    `SELECT id, name, gender, born_at as "bornAt", avatar,
+            created_at as "createdAt", updated_at as "updatedAt"
+     FROM baby WHERE id = ? AND user_id = ?`
+  ).bind(data.id, userId).first();
 
   return json({ ...result, avatar: MOCK_AVATAR });
 }

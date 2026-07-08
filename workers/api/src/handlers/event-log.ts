@@ -1,35 +1,29 @@
 import { json, error, noContent, parseJson } from '../utils';
 import type { Env } from '../utils';
 
-export async function handleGetEventLog(env: Env, url: URL) {
+export async function handleGetEventLog(env: Env, url: URL, userId: number) {
   const date = url.searchParams.get('date');
   const eventName = url.searchParams.get('eventName');
 
   let sql = `SELECT el.id, el.event_name as eventName, el.event_time as eventTime,
                     el.comment, el.extra, el.created_at as createdAt, el.updated_at as updatedAt
-             FROM event_log el`;
-
-  const conditions: string[] = [];
-  const values: unknown[] = [];
+             FROM event_log el
+             WHERE el.user_id = ?`;
+  const values: unknown[] = [userId];
 
   if (date) {
-    conditions.push('date(el.event_time) = date(?)');
     values.push(date);
+    sql += ' AND date(el.event_time) = date(?)';
   }
   if (eventName) {
-    conditions.push('el.event_name = ?');
     values.push(eventName);
-  }
-
-  if (conditions.length > 0) {
-    sql += ' WHERE ' + conditions.join(' AND ');
+    sql += ' AND el.event_name = ?';
   }
 
   sql += ' ORDER BY el.event_time DESC, el.id DESC';
 
   const { results: logs } = await env.DB.prepare(sql).bind(...values).all();
 
-  // Fetch all events to join in JS (avoids D1 dot-alias issues)
   const { results: events } = await env.DB.prepare(
     `SELECT id, name, display_name as displayName, icon, extra_fields as extraFields,
             created_at as createdAt, updated_at as updatedAt FROM event`
@@ -62,26 +56,28 @@ export async function handleGetEventLog(env: Env, url: URL) {
   return json(result);
 }
 
-export async function handleGetEventLogDistinct(env: Env, url: URL) {
+export async function handleGetEventLogDistinct(env: Env, url: URL, userId: number) {
   const date = url.searchParams.get('date');
 
   let sql = `SELECT el.event_name as eventName, e.display_name as displayName, COUNT(*) as count
              FROM event_log el
-             JOIN event e ON el.event_name = e.name`;
+             JOIN event e ON el.event_name = e.name
+             WHERE el.user_id = ?`;
+  const values: unknown[] = [userId];
 
   if (date) {
-    sql += ' WHERE date(el.event_time) = date(?)';
+    values.push(date);
+    sql += ' AND date(el.event_time) = date(?)';
   }
 
   sql += ' GROUP BY el.event_name, e.display_name ORDER BY count DESC';
 
-  const values = date ? [date] : [];
   const { results } = await env.DB.prepare(sql).bind(...values).all();
 
   return json(results);
 }
 
-export async function handleCreateEventLog(env: Env, body: string | null) {
+export async function handleCreateEventLog(env: Env, body: string | null, userId: number) {
   const data = parseJson(body);
   if (!data || !data.eventName) {
     return error('eventName is required', 400);
@@ -90,11 +86,11 @@ export async function handleCreateEventLog(env: Env, body: string | null) {
   const extra = data.extra ? JSON.stringify(data.extra) : null;
 
   const result = await env.DB.prepare(
-    `INSERT INTO event_log (event_name, event_time, comment, extra)
-     VALUES (?, ?, ?, ?)
+    `INSERT INTO event_log (event_name, event_time, comment, extra, user_id)
+     VALUES (?, ?, ?, ?, ?)
      RETURNING id, event_name as eventName, event_time as eventTime, comment, extra,
               created_at as createdAt, updated_at as updatedAt`
-  ).bind(data.eventName, data.eventTime || null, data.comment || null, extra).first();
+  ).bind(data.eventName, data.eventTime || null, data.comment || null, extra, userId).first();
 
   return json({
     ...result,
@@ -102,7 +98,7 @@ export async function handleCreateEventLog(env: Env, body: string | null) {
   }, 201);
 }
 
-export async function handleUpdateEventLog(env: Env, body: string | null) {
+export async function handleUpdateEventLog(env: Env, body: string | null, userId: number) {
   const data = parseJson(body);
   if (!data || !data.id) {
     return error('id is required', 400);
@@ -115,17 +111,17 @@ export async function handleUpdateEventLog(env: Env, body: string | null) {
   if (data.comment !== undefined) { fields.push('comment = ?'); values.push(data.comment); }
   if (data.extra !== undefined) { fields.push('extra = ?'); values.push(JSON.stringify(data.extra)); }
   fields.push('updated_at = datetime(\'now\')');
-  values.push(data.id);
+  values.push(data.id, userId);
 
   await env.DB.prepare(
-    `UPDATE event_log SET ${fields.join(', ')} WHERE id = ?`
+    `UPDATE event_log SET ${fields.join(', ')} WHERE id = ? AND user_id = ?`
   ).bind(...values).run();
 
   const result = await env.DB.prepare(
     `SELECT id, event_name as eventName, event_time as eventTime, comment, extra,
             created_at as createdAt, updated_at as updatedAt
-     FROM event_log WHERE id = ?`
-  ).bind(data.id).first();
+     FROM event_log WHERE id = ? AND user_id = ?`
+  ).bind(data.id, userId).first();
 
   return json({
     ...result,
@@ -133,7 +129,7 @@ export async function handleUpdateEventLog(env: Env, body: string | null) {
   });
 }
 
-export async function handleDeleteEventLog(env: Env, id: string) {
-  await env.DB.prepare('DELETE FROM event_log WHERE id = ?').bind(id).run();
+export async function handleDeleteEventLog(env: Env, id: string, userId: number) {
+  await env.DB.prepare('DELETE FROM event_log WHERE id = ? AND user_id = ?').bind(id, userId).run();
   return noContent();
 }
