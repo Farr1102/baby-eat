@@ -139,18 +139,18 @@ const labelRow = computed(() => {
       <div class="px-4">
         <!-- heatmap -->
         <div overflow-hidden rounded-xl bg-white p-3>
-          <div class="heatmap-grid" :style="{ gridTemplateColumns: `16px repeat(${19}, 12px)` }">
+          <div class="heatmap-grid">
             <!-- top labels -->
-            <div class="text-8px text-gray-3 text-right pr-1" />
+            <div />
             <div
               v-for="(lb, i) in labelRow"
               :key="i"
-              class="text-8px text-gray-3 w-12px text-center leading-12px"
+              class="text-8px text-gray-3 text-center"
             >{{ lb }}</div>
 
             <!-- day rows -->
             <template v-for="row in 7" :key="row">
-              <div class="text-8px text-gray-4 text-right pr-1 leading-14px">{{ dayLabels[row - 1] }}</div>
+              <div class="text-8px text-gray-4 text-right pr-1">{{ dayLabels[row - 1] }}</div>
               <div
                 v-for="(cell, ci) in heatCells.filter((_, i) => i % 7 === (row - 1) % 7)"
                 :key="ci"
@@ -204,13 +204,14 @@ const labelRow = computed(() => {
 <style lang="scss">
 .heatmap-grid {
   display: grid;
+  grid-template-columns: 16px repeat(19, 1fr);
   gap: 2px;
   align-items: center;
+  width: 100%;
 }
 
 .heat-cell {
-  width: 12px;
-  height: 12px;
+  aspect-ratio: 1;
   border-radius: 2px;
   cursor: pointer;
   flex-shrink: 0;
