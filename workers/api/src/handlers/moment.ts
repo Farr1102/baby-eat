@@ -47,8 +47,8 @@ export async function handleCreateMoment(env: Env, body: string | null, userId: 
   const attachments = data.attachments ? JSON.stringify(data.attachments) : '[]';
 
   const result = await env.DB.prepare(
-    `INSERT INTO moment (content, type, attachments, user_id)
-     VALUES (?, ?, ?, ?)
+    `INSERT INTO moment (content, type, attachments, user_id, created_at, updated_at)
+     VALUES (?, ?, ?, ?, datetime('now', '+8 hours'), datetime('now', '+8 hours'))
      RETURNING id, content, type, attachments, created_at as "createdAt", updated_at as "updatedAt"`
   ).bind(data.content, data.type || 'moment', attachments, userId).first();
 

@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn'
+import { showToast } from 'vant'
 import { ref } from 'vue'
 import { useGetApiEventLog, useGetApiEventLogDistinct } from '~/schemas/services/myAPI'
 
-function initDates() {
-  return Array.from({ length: 14 }, (_, i) => {
+dayjs.locale('zh-cn')
+
+function initDates(start?: string) {
+  const base = start ? dayjs(start) : dayjs()
+  return Array.from({ length: 30 }, (_, i) => {
     return {
-      date: dayjs().subtract(i, 'day').format('YYYY-MM-DD'),
-      day: dayjs().subtract(i, 'day').format('ddd'),
-      dateStr: dayjs().subtract(i, 'day').format('MM-DD'),
+      date: base.subtract(i, 'day').format('YYYY-MM-DD'),
+      day: base.subtract(i, 'day').format('dd'),
+      dateStr: base.subtract(i, 'day').format('MM-DD'),
     }
   })
 }
@@ -16,11 +21,31 @@ function initDates() {
 const dates = ref<ReturnType<typeof initDates>>()
 const activeDate = ref<string>()
 const activeEvent = ref<string>()
+const weekBase = ref(dayjs())
+const showCalendar = ref(false)
 
 function mount(date?: string) {
-  dates.value = initDates()
+  dates.value = initDates(weekBase.value.format('YYYY-MM-DD'))
   if (date)
     activeDate.value = date
+}
+
+function goPrevWeek() {
+  weekBase.value = weekBase.value.subtract(7, 'day')
+  mount()
+}
+
+function goNextWeek() {
+  const nextBase = weekBase.value.add(7, 'day')
+  if (nextBase.isAfter(dayjs(), 'day')) return
+  weekBase.value = nextBase
+  mount()
+}
+
+function selectCalendarDate(date: Date) {
+  showCalendar.value = false
+  weekBase.value = dayjs(date)
+  mount(dayjs(date).format('YYYY-MM-DD'))
 }
 
 mount(formatDatetime(new Date(), 'YYYY-MM-DD'))
@@ -152,9 +177,28 @@ const sleepTime = computed(() => {
     <van-nav-bar
       title="事件记录"
       class="mb-4"
+    >
+      <template #right>
+        <van-icon name="calendar-o" size="20" @click="showCalendar = true" />
+      </template>
+    </van-nav-bar>
+    <van-calendar
+      v-model:show="showCalendar"
+      :max-date="new Date()"
+      @confirm="({ date }: any) => selectCalendarDate(date)"
     />
     <van-pull-refresh v-model="isRefreshing" class="overflow-visible" @refresh="onRefresh">
       <div class="px-4">
+        <div flex items-center justify-between mb-2>
+          <van-icon name="arrow-left" size="18" @click="goPrevWeek" />
+          <span class="text-sm text-gray-5">{{ weekBase.format('YYYY年M月') }}</span>
+          <van-icon
+            name="arrow"
+            size="18"
+            :class="{ 'text-gray-3': weekBase.add(7, 'day').isAfter(dayjs(), 'day') }"
+            @click="goNextWeek"
+          />
+        </div>
         <div overflow-hidden rounded-xl bg-white>
           <van-grid
             :border="false"

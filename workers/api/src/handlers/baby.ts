@@ -29,8 +29,8 @@ export async function handleGetBaby(env: Env, id: string, userId: number) {
     const defaultName = '宝宝';
     const defaultBornAt = new Date().toISOString();
     result = await env.DB.prepare(
-      `INSERT INTO baby (name, gender, born_at, user_id)
-       VALUES (?, 0, ?, ?)
+      `INSERT INTO baby (name, gender, born_at, user_id, created_at, updated_at)
+       VALUES (?, 0, ?, ?, datetime('now', '+8 hours'), datetime('now', '+8 hours'))
        RETURNING id, name, gender, born_at as "bornAt", avatar,
                 created_at as "createdAt", updated_at as "updatedAt"`
     ).bind(defaultName, defaultBornAt, userId).first();

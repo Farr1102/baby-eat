@@ -86,8 +86,8 @@ export async function handleCreateEventLog(env: Env, body: string | null, userId
   const extra = data.extra ? JSON.stringify(data.extra) : null;
 
   const result = await env.DB.prepare(
-    `INSERT INTO event_log (event_name, event_time, comment, extra, user_id)
-     VALUES (?, ?, ?, ?, ?)
+    `INSERT INTO event_log (event_name, event_time, comment, extra, user_id, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, datetime('now', '+8 hours'), datetime('now', '+8 hours'))
      RETURNING id, event_name as eventName, event_time as eventTime, comment, extra,
               created_at as createdAt, updated_at as updatedAt`
   ).bind(data.eventName, data.eventTime || null, data.comment || null, extra, userId).first();
