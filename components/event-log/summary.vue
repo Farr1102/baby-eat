@@ -114,10 +114,16 @@ const sleepTime = computed(() => {
 const dayLabels = ['一', '二', '三', '四', '五', '六', '日']
 
 const labelRow = computed(() => {
-  const cols = []
-  for (let i = 0; i < 19; i++) {
-    const d = dayjs().subtract(19 - 1 - i, 'week').startOf('week').add(1, 'day')
-    cols.push(d.format('M/D'))
+  const cols: string[] = []
+  let lastMonth = ''
+  for (let w = 18; w >= 0; w--) {
+    const m = dayjs().subtract(w, 'week').format('M月')
+    if (m !== lastMonth) {
+      cols.push(m)
+      lastMonth = m
+    } else {
+      cols.push('')
+    }
   }
   return cols
 })
