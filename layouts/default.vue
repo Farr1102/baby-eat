@@ -30,9 +30,6 @@ router.beforeEach((to, from, next) => {
       <van-tabbar-item name="/" icon="home-o" @click="router.push('/')">
         首页
       </van-tabbar-item>
-      <van-tabbar-item name="/growth" icon="contact-o" @click="router.push('/growth')">
-        成长
-      </van-tabbar-item>
       <van-tabbar-item name="/moments" icon="apps-o" @click="router.push('/moments')">
         时刻
       </van-tabbar-item>
