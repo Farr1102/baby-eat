@@ -19,12 +19,17 @@ const MOCK_AVATAR = {
 };
 
 export async function handleGetBaby(env: Env, id: string) {
-  const result = await env.DB.prepare(
+  let result = await env.DB.prepare(
     'SELECT id, name, gender, born_at as "bornAt", avatar, created_at as "createdAt", updated_at as "updatedAt" FROM baby WHERE id = ?'
   ).bind(id).first();
 
+  // If no baby exists, auto-create a default one
   if (!result) {
-    return error('Baby not found', 404);
+    const defaultName = '宝宝';
+    const defaultBornAt = new Date().toISOString();
+    result = await env.DB.prepare(
+      'INSERT INTO baby (name, gender, born_at) VALUES (?, 0, ?) RETURNING id, name, gender, born_at as "bornAt", avatar, created_at as "createdAt", updated_at as "updatedAt"'
+    ).bind(defaultName, defaultBornAt).first();
   }
 
   return json({
