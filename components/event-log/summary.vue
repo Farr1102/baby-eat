@@ -48,18 +48,6 @@ const milestones = computed(() => {
   return map
 })
 
-const milestoneEntries = computed(() => {
-  if (!baby.value?.bornAt) return []
-  const born = dayjs(baby.value.bornAt)
-  return MILESTONE_LIST.map(m => ({
-    date: born.add(m.days, 'day').format('YYYY-MM-DD'),
-    label: m.label,
-    emoji: m.emoji,
-    days: m.days,
-    passed: dayjs().isAfter(born.add(m.days, 'day')),
-  }))
-})
-
 const activeDate = ref(dayjs().format('YYYY-MM-DD'))
 const activeEvent = ref<string>()
 
@@ -194,13 +182,7 @@ const labelRow = computed(() => {
     </div>
     <div v-if="babyAge" class="text-center text-xs text-pink mb-2">
       {{ baby?.name }} · {{ babyAge }}
-    </div>
-    <div v-if="milestoneEntries.length" class="flex flex-wrap justify-center gap-x-3 gap-y-1 mb-3 px-2 text-xs text-gray-5">
-      <span
-        v-for="m in milestoneEntries"
-        :key="m.days"
-        :class="{ 'text-green-600 font-medium': !m.passed, 'text-gray-4 line-through': m.passed }"
-      >{{ m.emoji }}{{ m.label }}</span>
+      <span v-if="milestones.get(activeDate)" class="text-green-600"> · {{ milestones.get(activeDate) }}</span>
     </div>
     <van-pull-refresh v-model="isRefreshing" class="overflow-visible" @refresh="onRefresh">
       <div class="px-4">
