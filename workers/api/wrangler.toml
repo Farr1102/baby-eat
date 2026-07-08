@@ -1,0 +1,8 @@
+name = "baby-eat-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "baby-eat"
+database_id = "cb866a44-2402-488b-a87a-2a39c07c6b4b"

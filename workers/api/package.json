@@ -1,0 +1,14 @@
+{
+  "name": "baby-eat-api",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "db:migrate": "wrangler d1 execute baby-eat --file=db/schema.sql",
+    "db:create": "wrangler d1 create baby-eat"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240101.0",
+    "wrangler": "^3.0.0"
+  }
+}
