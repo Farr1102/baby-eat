@@ -6,6 +6,7 @@ import { appDescription, proxyBaseURL } from './constants'
 import { pwa } from './config/pwa'
 
 export default defineNuxtConfig({
+  ssr: false,
   modules: [
     '@vant/nuxt',
     '@vueuse/nuxt',
