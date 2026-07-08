@@ -5,13 +5,9 @@ export async function handleGetEventLog(env: Env, url: URL) {
   const date = url.searchParams.get('date');
   const eventName = url.searchParams.get('eventName');
 
-  let sql = `SELECT el.id, el.event_name as "eventName", el.event_time as "eventTime",
-                    el.comment, el.extra, el.created_at as "createdAt", el.updated_at as "updatedAt",
-                    e.id as "event.id", e.name as "event.name", e.display_name as "event.displayName",
-                    e.icon as "event.icon", e.extra_fields as "event.extraFields",
-                    e.created_at as "event.createdAt", e.updated_at as "event.updatedAt"
-             FROM event_log el
-             LEFT JOIN event e ON el.event_name = e.name`;
+  let sql = `SELECT el.id, el.event_name as eventName, el.event_time as eventTime,
+                    el.comment, el.extra, el.created_at as createdAt, el.updated_at as updatedAt
+             FROM event_log el`;
 
   const conditions: string[] = [];
   const values: unknown[] = [];
@@ -31,9 +27,20 @@ export async function handleGetEventLog(env: Env, url: URL) {
 
   sql += ' ORDER BY el.event_time DESC, el.id DESC';
 
-  const { results } = await env.DB.prepare(sql).bind(...values).all();
+  const { results: logs } = await env.DB.prepare(sql).bind(...values).all();
 
-  const logs = results.map((row: any) => ({
+  // Fetch all events to join in JS (avoids D1 dot-alias issues)
+  const { results: events } = await env.DB.prepare(
+    `SELECT id, name, display_name as displayName, icon, extra_fields as extraFields,
+            created_at as createdAt, updated_at as updatedAt FROM event`
+  ).all();
+
+  const eventMap = new Map(events.map((e: any) => [e.name, {
+    ...e,
+    extraFields: e.extraFields ? JSON.parse(e.extraFields) : undefined,
+  }]));
+
+  const result = logs.map((row: any) => ({
     id: row.id,
     eventName: row.eventName,
     eventTime: row.eventTime,
@@ -41,24 +48,24 @@ export async function handleGetEventLog(env: Env, url: URL) {
     extra: row.extra ? JSON.parse(row.extra) : undefined,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
-    event: {
-      id: row['event.id'],
-      name: row['event.name'],
-      displayName: row['event.displayName'],
-      icon: row['event.icon'],
-      extraFields: row['event.extraFields'] ? JSON.parse(row['event.extraFields']) : undefined,
-      createdAt: row['event.createdAt'],
-      updatedAt: row['event.updatedAt'],
+    event: eventMap.get(row.eventName) || {
+      id: 0,
+      name: row.eventName,
+      displayName: row.eventName,
+      icon: '',
+      extraFields: undefined,
+      createdAt: '',
+      updatedAt: '',
     },
   }));
 
-  return json(logs);
+  return json(result);
 }
 
 export async function handleGetEventLogDistinct(env: Env, url: URL) {
   const date = url.searchParams.get('date');
 
-  let sql = `SELECT el.event_name as "eventName", e.display_name as "displayName", COUNT(*) as count
+  let sql = `SELECT el.event_name as eventName, e.display_name as displayName, COUNT(*) as count
              FROM event_log el
              JOIN event e ON el.event_name = e.name`;
 
@@ -85,8 +92,8 @@ export async function handleCreateEventLog(env: Env, body: string | null) {
   const result = await env.DB.prepare(
     `INSERT INTO event_log (event_name, event_time, comment, extra)
      VALUES (?, ?, ?, ?)
-     RETURNING id, event_name as "eventName", event_time as "eventTime", comment, extra,
-              created_at as "createdAt", updated_at as "updatedAt"`
+     RETURNING id, event_name as eventName, event_time as eventTime, comment, extra,
+              created_at as createdAt, updated_at as updatedAt`
   ).bind(data.eventName, data.eventTime || null, data.comment || null, extra).first();
 
   return json({
@@ -115,8 +122,8 @@ export async function handleUpdateEventLog(env: Env, body: string | null) {
   ).bind(...values).run();
 
   const result = await env.DB.prepare(
-    `SELECT id, event_name as "eventName", event_time as "eventTime", comment, extra,
-            created_at as "createdAt", updated_at as "updatedAt"
+    `SELECT id, event_name as eventName, event_time as eventTime, comment, extra,
+            created_at as createdAt, updated_at as updatedAt
      FROM event_log WHERE id = ?`
   ).bind(data.id).first();
 
