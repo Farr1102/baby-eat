@@ -159,8 +159,7 @@ export default {
 
       return corsJson({ error: 'Not Found' }, 404);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Internal Server Error';
-      return corsJson({ error: message }, 500);
+      return corsJson({ error: 'Internal Server Error' }, 500);
     }
   },
 };

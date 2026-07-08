@@ -60,7 +60,7 @@ export async function handleUpdateEvent(env: Env, body: string | null) {
     if (item.displayName !== undefined) { fields.push('display_name = ?'); values.push(item.displayName); }
     if (item.icon !== undefined) { fields.push('icon = ?'); values.push(item.icon); }
     if (item.extraFields !== undefined) { fields.push('extra_fields = ?'); values.push(JSON.stringify(item.extraFields)); }
-    fields.push('updated_at = datetime(\'now\')');
+    fields.push('updated_at = datetime(\'now\', \'+8 hours\')');
     values.push(item.id);
 
     await env.DB.prepare(

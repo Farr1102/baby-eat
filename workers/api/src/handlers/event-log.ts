@@ -61,7 +61,7 @@ export async function handleGetEventLogDistinct(env: Env, url: URL, userId: numb
 
   let sql = `SELECT el.event_name as eventName, e.display_name as displayName, COUNT(*) as count
              FROM event_log el
-             JOIN event e ON el.event_name = e.name
+             LEFT JOIN event e ON el.event_name = e.name
              WHERE el.user_id = ?`;
   const values: unknown[] = [userId];
 

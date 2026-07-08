@@ -9,7 +9,7 @@ export async function handleRegister(env: Env, body: string | null) {
   }
 
   const username = String(data.username).trim();
-  const password = String(data.password);
+  const password = String(data.password).trim();
 
   if (username.length < 2 || username.length > 30) {
     return error('username must be 2-30 characters', 400);
@@ -47,7 +47,6 @@ export async function handleLogin(env: Env, body: string | null) {
   }
 
   const username = String(data.username).trim();
-
   const user: any = await env.DB.prepare(
     'SELECT id, username, password_hash as passwordHash FROM user WHERE username = ?'
   ).bind(username).first();
@@ -56,7 +55,7 @@ export async function handleLogin(env: Env, body: string | null) {
     return error('invalid username or password', 401);
   }
 
-  const valid = await verifyPassword(String(data.password), user.passwordHash);
+  const valid = await verifyPassword(String(data.password).trim(), user.passwordHash);
   if (!valid) {
     return error('invalid username or password', 401);
   }

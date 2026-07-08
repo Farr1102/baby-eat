@@ -2,8 +2,10 @@ import { json, error, noContent, parseJson } from '../utils';
 import type { Env } from '../utils';
 
 export async function handleGetMoments(env: Env, url: URL, userId: number) {
-  const page = parseInt(url.searchParams.get('page') || '1', 10);
-  const pageSize = parseInt(url.searchParams.get('pageSize') || '20', 10);
+  const pageRaw = parseInt(url.searchParams.get('page') || '1', 10);
+  const pageSizeRaw = parseInt(url.searchParams.get('pageSize') || '20', 10);
+  const page = Number.isFinite(pageRaw) && pageRaw > 0 ? pageRaw : 1;
+  const pageSize = Math.min(Math.max(1, Number.isFinite(pageSizeRaw) ? pageSizeRaw : 20), 100);
   const type = url.searchParams.get('type');
 
   let sql = `SELECT id, content, type, attachments, created_at as "createdAt", updated_at as "updatedAt"
