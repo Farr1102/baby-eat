@@ -43,6 +43,8 @@ const avatar = computed(() => {
 })
 
 const router = useRouter()
+
+const { logout, user } = useAuth()
 </script>
 
 <template>
@@ -122,6 +124,11 @@ const router = useRouter()
       <van-cell title="意见反馈" is-link size="large" to="/setting/feedback" />
       <van-cell title="用户协议" is-link size="large" @click="showToast('Not Implemented')" />
     </van-cell-group>
+    <div class="mt-8 px-4 pb-8">
+      <van-button round block color="#ec489a" @click="logout">
+        退出登录
+      </van-button>
+    </div>
   </div>
 </template>
 

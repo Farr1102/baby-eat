@@ -13,6 +13,8 @@ import { handleGetBucket, handleCreateBucket } from './handlers/bucket';
 import { handleUpload } from './handlers/upload';
 import { handleCompress, handleCompressOld } from './handlers/compress';
 import { handleHelloGeminiPro, handleHelloPhoton } from './handlers/hello';
+import { handleRegister, handleLogin, handleMe, handleLogout } from './handlers/auth';
+import { isPublicPath, authMiddleware } from './auth';
 
 export { Env };
 
@@ -30,15 +32,8 @@ function corsHeaders() {
 function corsJson(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: {
-      'Content-Type': 'application/json',
-      ...corsHeaders(),
-    },
+    headers: { 'Content-Type': 'application/json', ...corsHeaders() },
   });
-}
-
-function corsNoContent() {
-  return new Response(null, { status: 204, headers: corsHeaders() });
 }
 
 export default {
@@ -52,13 +47,17 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders() });
     }
 
+    // Auth middleware
+    const userId = await authMiddleware(env, request);
+    if (userId === null && !isPublicPath(path)) {
+      return corsJson({ error: 'Unauthorized' }, 401);
+    }
+
     const body = method === 'GET' || method === 'DELETE' ? null : await request.text();
 
     try {
-      // Helper: wrap handler response with CORS headers
       const handle = async (handler: () => Promise<Response>) => {
         const res = await handler();
-        // Add CORS headers to existing response
         const newHeaders = new Headers(res.headers);
         for (const [key, value] of Object.entries(corsHeaders())) {
           newHeaders.set(key, value);
@@ -66,12 +65,26 @@ export default {
         return new Response(res.body, { status: res.status, headers: newHeaders });
       };
 
-      // /api/hello (local Nitro health check — keep it alive)
+      // --- Auth routes (public) ---
+      if (path === '/api/auth/register' && method === 'POST') {
+        return handle(() => handleRegister(env, body));
+      }
+      if (path === '/api/auth/login' && method === 'POST') {
+        return handle(() => handleLogin(env, body));
+      }
+
+      // --- Auth routes (protected) ---
+      if (path === '/api/auth/me' && method === 'GET') {
+        return handle(() => handleMe(env, body, userId!));
+      }
+      if (path === '/api/auth/logout' && method === 'POST') {
+        return handle(() => handleLogout(env, body, userId!));
+      }
+
+      // --- Health / Doc ---
       if (path === '/api/hello') {
         return handle(() => Promise.resolve(new Response('Hello World!')));
       }
-
-      // /api/doc — OpenAPI spec
       if (path === '/api/doc') {
         return handle(() => Promise.resolve(json({ openapi: '3.0.0', info: { title: 'Baby Eat API', version: '1.0.0' } })));
       }
@@ -81,8 +94,6 @@ export default {
       if (babyIdMatch && method === 'GET') {
         return handle(() => handleGetBaby(env, babyIdMatch[1]));
       }
-
-      // /api/baby — POST, PATCH
       if (path === '/api/baby') {
         if (method === 'POST') return handle(() => handleCreateBaby(env, body));
         if (method === 'PATCH') return handle(() => handleUpdateBaby(env, body));
@@ -99,14 +110,10 @@ export default {
       if (path === '/api/event-log/distinct' && method === 'GET') {
         return handle(() => handleGetEventLogDistinct(env, url));
       }
-
-      // /api/event-log/:id — DELETE
       const eventLogIdMatch = path.match(/^\/api\/event-log\/(\d+)$/);
       if (eventLogIdMatch && method === 'DELETE') {
         return handle(() => handleDeleteEventLog(env, eventLogIdMatch[1]));
       }
-
-      // /api/event-log — GET, POST, PATCH
       if (path === '/api/event-log') {
         if (method === 'GET') return handle(() => handleGetEventLog(env, url));
         if (method === 'POST') return handle(() => handleCreateEventLog(env, body));
@@ -119,8 +126,6 @@ export default {
         if (method === 'POST') return handle(() => handleCreateMoment(env, body));
         if (method === 'PUT') return handle(() => handleUpdateMoment(env, body));
       }
-
-      // /api/moment/:id — DELETE
       const momentIdMatch = path.match(/^\/api\/moment\/(\d+)$/);
       if (momentIdMatch && method === 'DELETE') {
         return handle(() => handleDeleteMoment(env, momentIdMatch[1]));
@@ -131,33 +136,23 @@ export default {
       if (bucketNameMatch && method === 'GET') {
         return handle(() => handleGetBucket(env, bucketNameMatch[1]));
       }
-
-      // /api/bucket — POST
       if (path === '/api/bucket' && method === 'POST') {
         return handle(() => handleCreateBucket(env, body));
       }
 
-      // /api/upload — POST
+      // Upload / Compress / Hello
       if (path === '/api/upload' && method === 'POST') {
         return handle(() => handleUpload());
       }
-
-      // /api/compress — POST
       if (path === '/api/compress' && method === 'POST') {
         return handle(() => handleCompress());
       }
-
-      // /api/compress-old — POST
       if (path === '/api/compress-old' && method === 'POST') {
         return handle(() => handleCompressOld());
       }
-
-      // /api/hello/gemini-pro — POST
       if (path === '/api/hello/gemini-pro' && method === 'POST') {
         return handle(() => handleHelloGeminiPro());
       }
-
-      // /api/hello/photon — POST
       if (path === '/api/hello/photon' && method === 'POST') {
         return handle(() => handleHelloPhoton());
       }

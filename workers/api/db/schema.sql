@@ -37,6 +37,21 @@ CREATE TABLE IF NOT EXISTS moment (
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS user (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS session (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  token TEXT NOT NULL UNIQUE,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (user_id) REFERENCES user(id)
+);
+
 -- Seed default events (baby tracking essentials)
 INSERT OR IGNORE INTO event (name, display_name, icon, extra_fields) VALUES
 ('Feed', '喂养', '🍼', '[{"name":"type","displayName":"类型","type":"radio","enums":["Breast","Formula"]},{"name":"milkVolume","displayName":"奶量(ml)","type":"number"}]'),

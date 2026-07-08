@@ -4,11 +4,20 @@ import { proxyBaseURL } from '~/constants'
 
 let requestBaseURL = proxyBaseURL
 
-// eslint-disable-next-line node/prefer-global/process
 if (process.env.NODE_ENV === 'development' && process.client)
   requestBaseURL = ''
 
 const baseURL = requestBaseURL
+
+function getAuthHeaders(): HeadersInit {
+  if (process.client) {
+    const token = localStorage.getItem('auth:token')
+    if (token) {
+      return { Authorization: `Bearer ${token}` }
+    }
+  }
+  return {}
+}
 
 export { baseURL }
 
@@ -40,8 +49,6 @@ export async function customInstance<T>({
     body = JSON.stringify(data)
 
   if (contentType === 'multipart/form-data') {
-    // 注意：当使用 FormData 时，不要手动设置 Content-Type
-    // fetch 会自动设置正确的 Content-Type
     delete headers?.['Content-Type']
   }
 
@@ -50,7 +57,7 @@ export async function customInstance<T>({
     {
       method,
       body,
-      headers,
+      headers: { ...getAuthHeaders(), ...headers },
       signal,
     },
   )
@@ -59,6 +66,19 @@ export async function customInstance<T>({
 
   const json = await response.json()
   if (!response.ok) {
+    if (response.status === 401) {
+      // Token expired or invalid — redirect to login
+      showToast({
+        type: 'fail',
+        message: '请重新登录',
+      })
+      if (process.client) {
+        localStorage.removeItem('auth:token')
+        localStorage.removeItem('auth:user')
+        window.location.href = '/login'
+      }
+      throw new Error('请重新登录')
+    }
     showToast({
       type: 'fail',
       message: json.error,
