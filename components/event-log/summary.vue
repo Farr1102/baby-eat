@@ -103,7 +103,7 @@ onMounted(() => {
 })
 
 const hasFeedAD = computed(() =>
-  !!logs.value?.find(e => e.eventName === 'Supplement' && JSON.stringify(e.extra)?.includes('AD')))
+  !!logs.value?.find(e => e.eventName === 'Supplement' && (e.extra as any)?.taken === '是'))
 const sleepTime = computed(() => {
   const sl = logs.value?.filter(e => e.eventName === 'Sleep')
   if (!sl?.length) return '0 小时 0 分钟'

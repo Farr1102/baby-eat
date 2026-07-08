@@ -28,7 +28,7 @@ export function formatLogInfo(eventLogResult: EventLogResult) {
   }
 
   if (eventName === 'Supplement') {
-    return extra?.type ? `${extra.type}` : event.displayName
+    return extra?.taken === '是' ? '补剂: 已吃' : '补剂'
   }
 
   return event.displayName
