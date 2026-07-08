@@ -288,8 +288,6 @@ const labelRow = computed(() => {
   cursor: pointer;
   flex-shrink: 0;
   position: relative;
-  transition: transform 0.1s;
-  &:hover { transform: scale(1.3); }
 }
 
 .milestone-dot {
@@ -305,7 +303,6 @@ const labelRow = computed(() => {
 }
 
 .heat-cell--active {
-  transform: scale(1.3);
-  box-shadow: 0 0 0 1px #fff, 0 0 0 2px #ec489a;
+  box-shadow: inset 0 0 0 2px #333;
 }
 </style>
