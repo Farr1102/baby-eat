@@ -45,8 +45,6 @@ const milestones = computed(() => {
 
 const activeDate = ref(dayjs().format('YYYY-MM-DD'))
 const activeEvent = ref<string>()
-const showCalendar = ref(false)
-const pageStart = ref(dayjs().subtract(12, 'week'))
 
 // heatmap
 const heatmapData = ref<{ date: string; count: number }[]>([])
@@ -170,7 +168,12 @@ const labelRow = computed(() => {
   <div bg="#f5f5f5" h-full w-full overflow-auto pb-13>
     <van-nav-bar title="事件记录" class="mb-4" />
     <div class="text-center text-sm text-gray-5 mb-1">
-      {{ dayjs().format('YYYY年M月D日 dddd') }}
+      {{ dayjs(activeDate).format('YYYY年M月D日 dddd') }}
+      <span
+        v-if="activeDate !== dayjs().format('YYYY-MM-DD')"
+        class="ml-2 text-xs text-pink cursor-pointer"
+        @click="activeDate = dayjs().format('YYYY-MM-DD')"
+      >回到今天</span>
     </div>
     <div v-if="babyAge" class="text-center text-xs text-pink mb-2">
       {{ baby?.name }} · {{ babyAge }}
@@ -267,12 +270,14 @@ const labelRow = computed(() => {
 
 .milestone-dot {
   position: absolute;
-  top: -3px;
-  right: -2px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: #22c55e;
+  pointer-events: none;
 }
 
 .heat-cell--active {
