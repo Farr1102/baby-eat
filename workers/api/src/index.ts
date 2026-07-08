@@ -4,6 +4,7 @@ import { handleGetEvents, handleCreateEvent, handleUpdateEvent } from './handler
 import {
   handleGetEventLog,
   handleGetEventLogDistinct,
+  handleGetEventLogHeatmap,
   handleCreateEventLog,
   handleUpdateEventLog,
   handleDeleteEventLog,
@@ -104,6 +105,11 @@ export default {
         if (method === 'GET') return handle(() => handleGetEvents(env));
         if (method === 'POST') return handle(() => handleCreateEvent(env, body));
         if (method === 'PATCH') return handle(() => handleUpdateEvent(env, body));
+      }
+
+      // /api/event-log/heatmap — GET (before /distinct and /:id)
+      if (path === '/api/event-log/heatmap' && method === 'GET') {
+        return handle(() => handleGetEventLogHeatmap(env, url, userId!));
       }
 
       // /api/event-log/distinct — GET

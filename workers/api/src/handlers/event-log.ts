@@ -133,3 +133,32 @@ export async function handleDeleteEventLog(env: Env, id: string, userId: number)
   await env.DB.prepare('DELETE FROM event_log WHERE id = ? AND user_id = ?').bind(id, userId).run();
   return noContent();
 }
+
+export async function handleGetEventLogHeatmap(env: Env, url: URL, userId: number) {
+  const weeks = Math.min(parseInt(url.searchParams.get('weeks') || '20') || 20, 52);
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - weeks * 7);
+
+  const { results } = await env.DB.prepare(
+    `SELECT date(event_time) as date, COUNT(*) as count
+     FROM event_log
+     WHERE user_id = ? AND event_time >= ? AND event_time <= ?
+     GROUP BY date(event_time)
+     ORDER BY date ASC`
+  ).bind(userId, startDate.toISOString(), endDate.toISOString()).all();
+
+  // Build a map of date -> count
+  const countMap = new Map((results as any[]).map(r => [r.date, r.count]));
+
+  // Fill in all dates in range
+  const data: { date: string; count: number }[] = [];
+  const d = new Date(startDate);
+  while (d <= endDate) {
+    const dateStr = d.toISOString().slice(0, 10);
+    data.push({ date: dateStr, count: countMap.get(dateStr) || 0 });
+    d.setDate(d.getDate() + 1);
+  }
+
+  return json(data);
+}
