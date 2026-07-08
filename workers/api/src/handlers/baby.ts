@@ -18,12 +18,12 @@ const MOCK_AVATAR = {
   updatedAt: '2024-01-01T00:00:00.000Z',
 };
 
-export async function handleGetBaby(env: Env, id: string, userId: number) {
+export async function handleGetBaby(env: Env, _id: string, userId: number) {
   let result = await env.DB.prepare(
     `SELECT id, name, gender, born_at as "bornAt", avatar,
             created_at as "createdAt", updated_at as "updatedAt"
-     FROM baby WHERE id = ? AND user_id = ?`
-  ).bind(id, userId).first();
+     FROM baby WHERE user_id = ? ORDER BY id ASC LIMIT 1`
+  ).bind(userId).first();
 
   if (!result) {
     const defaultName = '宝宝';
@@ -46,8 +46,8 @@ export async function handleCreateBaby(env: Env, body: string | null, userId: nu
   }
 
   const result = await env.DB.prepare(
-    `INSERT INTO baby (name, gender, born_at, user_id)
-     VALUES (?, ?, ?, ?)
+    `INSERT INTO baby (name, gender, born_at, user_id, created_at, updated_at)
+     VALUES (?, ?, ?, ?, datetime('now', '+8 hours'), datetime('now', '+8 hours'))
      RETURNING id, name, gender, born_at as "bornAt", avatar,
               created_at as "createdAt", updated_at as "updatedAt"`
   ).bind(data.name, data.gender ?? 0, data.bornAt, userId).first();
