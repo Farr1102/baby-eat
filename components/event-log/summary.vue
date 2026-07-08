@@ -131,16 +131,10 @@ const labelRow = computed(() => {
 
 <template>
   <div bg="#f5f5f5" h-full w-full overflow-auto pb-13>
-    <van-nav-bar title="事件记录" class="mb-4">
-      <template #right>
-        <van-icon name="calendar-o" size="20" @click="showCalendar = true" />
-      </template>
-    </van-nav-bar>
-    <van-calendar
-      v-model:show="showCalendar"
-      :max-date="new Date()"
-      @confirm="({ date }: any) => selectCalendarDate(date)"
-    />
+    <van-nav-bar title="事件记录" class="mb-4" />
+    <div class="text-center text-sm text-gray-5 mb-2">
+      {{ dayjs().format('YYYY年M月D日 dddd') }}
+    </div>
     <van-pull-refresh v-model="isRefreshing" class="overflow-visible" @refresh="onRefresh">
       <div class="px-4">
         <!-- heatmap -->
