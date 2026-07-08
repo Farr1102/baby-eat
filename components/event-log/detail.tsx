@@ -114,7 +114,7 @@ export default defineComponent({
               )}
             </div>
             <div class="mt-1 text-0.6rem text-gray-4">
-              {formatDatetime(eventLog.value.eventTime!, 'h:mm A')}
+              {formatDatetime(eventLog.value.eventTime!, 'HH:mm')}
             </div>
             <div class="mt-1 whitespace-pre-wrap text-0.6rem text-gray-4">
               {eventLog.value.comment}

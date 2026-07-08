@@ -54,10 +54,10 @@ CREATE TABLE IF NOT EXISTS session (
 
 -- Seed default events (baby tracking essentials)
 INSERT OR IGNORE INTO event (name, display_name, icon, extra_fields) VALUES
-('Feed', '喂养', '🍼', '[{"name":"type","displayName":"类型","type":"radio","enums":["Breast","Formula"]},{"name":"milkVolume","displayName":"奶量(ml)","type":"number"}]'),
-('Diaper', '尿布', '🩲', '[{"name":"source","displayName":"类型","type":"radio","enums":["Wet","Dirty","Both"]}]'),
-('Sleep', '睡眠', '😴', '[{"name":"duration","displayName":"时长(分钟)","type":"number"}]'),
-('Weigh', '体重', '⚖️', '[{"name":"weight","displayName":"体重(kg)","type":"number"}]'),
+('Feed', '喂养', '🍼', '[{"name":"type","displayName":"类型","type":"radio","enums":["Breast","Formula"],"userInput":true},{"name":"milkVolume","displayName":"奶量(ml)","type":"number","userInput":true}]'),
+('Diaper', '尿布', '🩲', '[{"name":"source","displayName":"类型","type":"radio","enums":["Wet","Dirty","Both"],"userInput":true}]'),
+('Sleep', '睡眠', '😴', '[{"name":"duration","displayName":"时长(分钟)","type":"number","userInput":true}]'),
+('Weigh', '体重', '⚖️', '[{"name":"weight","displayName":"体重(kg)","type":"number","userInput":true}]'),
 ('Bath', '洗澡', '🛁', '[]'),
-('Pump', '吸奶', '🤱', '[{"name":"volume","displayName":"奶量(ml)","type":"number"}]'),
-('Supplement', '补剂', '💊', '[{"name":"type","displayName":"类型","type":"text"}]');
+('Pump', '吸奶', '🤱', '[{"name":"volume","displayName":"奶量(ml)","type":"number","userInput":true}]'),
+('Supplement', '补剂', '💊', '[{"name":"type","displayName":"类型","type":"text","userInput":true}]');
