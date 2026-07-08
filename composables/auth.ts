@@ -1,3 +1,5 @@
+const API_BASE = '/api';
+
 export function useAuth() {
   const token = useState<string | null>('auth:token', () => null);
   const user = useState<{ id: number; username: string } | null>('auth:user', () => null);
@@ -33,7 +35,7 @@ export function useAuth() {
       return;
     }
     try {
-      const res = await fetch('https://baby-eat-api.farr1102work.workers.dev/api/auth/me', {
+      const res = await fetch(`${API_BASE}/auth/me`, {
         headers: { Authorization: `Bearer ${savedToken}` },
       });
       if (res.ok) {
@@ -49,7 +51,7 @@ export function useAuth() {
   }
 
   async function login(username: string, password: string) {
-    const res = await fetch('https://baby-eat-api.farr1102work.workers.dev/api/auth/login', {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
@@ -61,7 +63,7 @@ export function useAuth() {
   }
 
   async function register(username: string, password: string) {
-    const res = await fetch('https://baby-eat-api.farr1102work.workers.dev/api/auth/register', {
+    const res = await fetch(`${API_BASE}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
@@ -76,7 +78,7 @@ export function useAuth() {
     const t = token.value;
     if (t) {
       try {
-        await fetch('https://baby-eat-api.farr1102work.workers.dev/api/auth/logout', {
+        await fetch(`${API_BASE}/auth/logout`, {
           method: 'POST',
           headers: { Authorization: `Bearer ${t}` },
         });

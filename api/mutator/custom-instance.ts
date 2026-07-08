@@ -4,7 +4,8 @@ import { proxyBaseURL } from '~/constants'
 
 let requestBaseURL = proxyBaseURL
 
-if (process.env.NODE_ENV === 'development' && process.client)
+// Always use relative URLs on client side — Vercel handles proxy forwarding
+if (process.client)
   requestBaseURL = ''
 
 const baseURL = requestBaseURL
