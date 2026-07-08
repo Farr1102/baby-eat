@@ -2,9 +2,46 @@
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import { showToast } from 'vant'
-import { useGetApiEventLog, useGetApiEventLogDistinct } from '~/schemas/services/myAPI'
+import { useGetApiBabyId, useGetApiEventLog, useGetApiEventLogDistinct } from '~/schemas/services/myAPI'
 
 dayjs.locale('zh-cn')
+
+const { data: baby } = useGetApiBabyId('1')
+
+// Baby age
+const babyAge = computed(() => {
+  if (!baby.value?.bornAt) return ''
+  const born = dayjs(baby.value.bornAt)
+  const now = dayjs()
+  const days = now.diff(born, 'day')
+  if (days <= 100) return `${days} 天`
+  const months = now.diff(born, 'month')
+  if (days <= 365) {
+    const remDays = now.diff(born.add(months, 'month'), 'day')
+    return `${months} 个月 ${remDays} 天`
+  }
+  const years = now.diff(born, 'year')
+  const remMonths = months - years * 12
+  return remMonths > 0 ? `${years} 岁 ${remMonths} 个月` : `${years} 岁`
+})
+
+// Milestone dates
+const milestones = computed(() => {
+  if (!baby.value?.bornAt) return new Map<string, string>()
+  const born = dayjs(baby.value.bornAt)
+  const map = new Map<string, string>()
+  const add = (days: number, label: string) => map.set(born.add(days, 'day').format('YYYY-MM-DD'), label)
+  add(0, '出生')
+  add(7, '一周')
+  add(14, '两周')
+  add(30, '满月')
+  add(100, '百天')
+  add(180, '六个月')
+  add(365, '一岁')
+  add(730, '两岁')
+  add(1095, '三岁')
+  return map
+})
 
 const activeDate = ref(dayjs().format('YYYY-MM-DD'))
 const activeEvent = ref<string>()
@@ -132,8 +169,11 @@ const labelRow = computed(() => {
 <template>
   <div bg="#f5f5f5" h-full w-full overflow-auto pb-13>
     <van-nav-bar title="事件记录" class="mb-4" />
-    <div class="text-center text-sm text-gray-5 mb-2">
+    <div class="text-center text-sm text-gray-5 mb-1">
       {{ dayjs().format('YYYY年M月D日 dddd') }}
+    </div>
+    <div v-if="babyAge" class="text-center text-xs text-pink mb-2">
+      {{ baby?.name }} · {{ babyAge }}
     </div>
     <van-pull-refresh v-model="isRefreshing" class="overflow-visible" @refresh="onRefresh">
       <div class="px-4">
@@ -157,9 +197,14 @@ const labelRow = computed(() => {
                 class="heat-cell"
                 :class="{ 'heat-cell--active': activeDate === cell.date }"
                 :style="{ backgroundColor: heatColor(cell.level) }"
-                :title="`${cell.date}: ${cell.count}`"
+                :title="`${cell.date}: ${cell.count}${milestones.get(cell.date) ? ' · ' + milestones.get(cell.date) : ''}`"
                 @click="activeDate = cell.date"
-              />
+              >
+                <div
+                  v-if="milestones.get(cell.date)"
+                  class="milestone-dot"
+                />
+              </div>
             </template>
           </div>
         </div>
@@ -215,8 +260,19 @@ const labelRow = computed(() => {
   border-radius: 2px;
   cursor: pointer;
   flex-shrink: 0;
+  position: relative;
   transition: transform 0.1s;
   &:hover { transform: scale(1.3); }
+}
+
+.milestone-dot {
+  position: absolute;
+  top: -3px;
+  right: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22c55e;
 }
 
 .heat-cell--active {
