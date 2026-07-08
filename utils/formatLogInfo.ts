@@ -4,6 +4,9 @@ export function getDesc(value: unknown, unit: string) {
   return value ? ` ${value}${unit}` : ''
 }
 
+const FEED_MAP: Record<string, string> = { Breast: '母乳', Formula: '配方奶' }
+const DIAPER_MAP: Record<string, string> = { Wet: '尿', Dirty: '便', Both: '尿便' }
+
 export function formatLogInfo(eventLogResult: EventLogResult) {
   const { extra, eventName, event } = eventLogResult
 
@@ -13,14 +16,15 @@ export function formatLogInfo(eventLogResult: EventLogResult) {
   }
 
   if (eventName === 'Feed') {
-    const type = extra?.type || ''
+    const type = FEED_MAP[extra?.type as string] || extra?.type || ''
     const vol = getDesc(extra?.milkVolume, 'ml')
     const desc = `${type}${vol}`.trim()
     return desc || event.displayName
   }
 
   if (eventName === 'Diaper') {
-    return extra?.source ? `${extra.source}` : event.displayName
+    const src = DIAPER_MAP[extra?.source as string] || extra?.source
+    return src ? `${src}` : event.displayName
   }
 
   if (eventName === 'Supplement') {

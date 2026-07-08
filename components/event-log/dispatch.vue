@@ -38,7 +38,9 @@ onServerPrefetch(suspense)
           :key="event.displayName"
           @click="showEventLogCreateForm(event)"
         >
-          <Icon :preview-disabled="true" class="m-auto !h-unset !w-full" :name="event.icon" />
+          <div class="flex justify-center">
+            <Icon :preview-disabled="true" class="!w-8 !h-8" :name="event.icon" />
+          </div>
           <span class="whitespace-nowrap pt-1 text-xs text-gray-4">
             {{ event.displayName }}
           </span>

@@ -160,9 +160,6 @@ const labelRow = computed(() => {
               />
             </template>
           </div>
-          <div flex items-center justify-end gap-1 pt-2 text-9px text-gray-4>
-            少 <span v-for="lvl in 5" :key="lvl" class="heat-cell" :style="{ backgroundColor: heatColor(lvl - 1) }" /> 多
-          </div>
         </div>
 
         <!-- stats -->
