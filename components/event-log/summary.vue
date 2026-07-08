@@ -26,21 +26,38 @@ const babyAge = computed(() => {
 })
 
 // Milestone dates
+const MILESTONE_LIST: { days: number; label: string; emoji: string }[] = [
+  { days: 0, label: '出生啦', emoji: '🧨' },
+  { days: 7, label: '一周', emoji: '🎂' },
+  { days: 14, label: '两周', emoji: '⭐' },
+  { days: 30, label: '满月', emoji: '🌕' },
+  { days: 100, label: '百天', emoji: '💯' },
+  { days: 180, label: '六个月', emoji: '📅' },
+  { days: 365, label: '一岁', emoji: '🎂' },
+  { days: 730, label: '两岁', emoji: '🎂' },
+  { days: 1095, label: '三岁', emoji: '🎂' },
+]
+
 const milestones = computed(() => {
   if (!baby.value?.bornAt) return new Map<string, string>()
   const born = dayjs(baby.value.bornAt)
   const map = new Map<string, string>()
-  const add = (days: number, label: string) => map.set(born.add(days, 'day').format('YYYY-MM-DD'), label)
-  add(0, '出生')
-  add(7, '一周')
-  add(14, '两周')
-  add(30, '满月')
-  add(100, '百天')
-  add(180, '六个月')
-  add(365, '一岁')
-  add(730, '两岁')
-  add(1095, '三岁')
+  for (const m of MILESTONE_LIST) {
+    map.set(born.add(m.days, 'day').format('YYYY-MM-DD'), `${m.emoji} ${m.label}`)
+  }
   return map
+})
+
+const milestoneEntries = computed(() => {
+  if (!baby.value?.bornAt) return []
+  const born = dayjs(baby.value.bornAt)
+  return MILESTONE_LIST.map(m => ({
+    date: born.add(m.days, 'day').format('YYYY-MM-DD'),
+    label: m.label,
+    emoji: m.emoji,
+    days: m.days,
+    passed: dayjs().isAfter(born.add(m.days, 'day')),
+  }))
 })
 
 const activeDate = ref(dayjs().format('YYYY-MM-DD'))
@@ -177,6 +194,13 @@ const labelRow = computed(() => {
     </div>
     <div v-if="babyAge" class="text-center text-xs text-pink mb-2">
       {{ baby?.name }} · {{ babyAge }}
+    </div>
+    <div v-if="milestoneEntries.length" class="flex flex-wrap justify-center gap-x-3 gap-y-1 mb-3 px-2 text-xs text-gray-5">
+      <span
+        v-for="m in milestoneEntries"
+        :key="m.days"
+        :class="{ 'text-green-600 font-medium': !m.passed, 'text-gray-4 line-through': m.passed }"
+      >{{ m.emoji }}{{ m.label }}</span>
     </div>
     <van-pull-refresh v-model="isRefreshing" class="overflow-visible" @refresh="onRefresh">
       <div class="px-4">
