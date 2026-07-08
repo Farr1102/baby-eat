@@ -60,4 +60,4 @@ INSERT OR IGNORE INTO event (name, display_name, icon, extra_fields) VALUES
 ('Weigh', '体重', '⚖️', '[{"name":"weight","displayName":"体重(kg)","type":"number","userInput":true}]'),
 ('Bath', '洗澡', '🛁', '[]'),
 ('Pump', '吸奶', '🤱', '[{"name":"volume","displayName":"奶量(ml)","type":"number","userInput":true}]'),
-('Supplement', '补剂', '💊', '[{"name":"taken","displayName":"已吃","type":"radio","enums":["是","否"],"userInput":true}]');
+('Supplement', 'AD', '💊', '[{"name":"taken","displayName":"已吃","type":"radio","enums":["是","否"],"userInput":true}]');
