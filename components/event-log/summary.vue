@@ -17,7 +17,10 @@ const maxCount = computed(() => Math.max(1, ...heatmapData.value.map(d => d.coun
 
 async function fetchHeatmap() {
   try {
-    const res = await fetch('/api/event-log/heatmap?weeks=20')
+    const token = process.client ? localStorage.getItem('auth:token') : null
+    const res = await fetch('/api/event-log/heatmap?weeks=20', {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
     if (res.ok) heatmapData.value = await res.json()
   } catch { /* ignore */ }
 }
@@ -62,9 +65,8 @@ const isRefreshing = ref(false)
 
 function onRefresh(date?: string) {
   if (date) activeDate.value = date
-  Promise.all([refetchTags(), refetchLogs(), fetchHeatmap()]).then(() => {
+  Promise.all([refetchTags(), refetchLogs(), fetchHeatmap()]).finally(() => {
     isRefreshing.value = false
-    showToast('刷新成功')
   })
 }
 
@@ -207,10 +209,11 @@ const labelRow = computed(() => {
 }
 
 .heat-cell {
-  aspect-ratio: 1;
-  width: 100%;
+  width: 12px;
+  height: 12px;
   border-radius: 2px;
   cursor: pointer;
+  flex-shrink: 0;
   transition: transform 0.1s;
   &:hover { transform: scale(1.3); }
 }
