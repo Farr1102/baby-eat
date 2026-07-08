@@ -22,12 +22,13 @@ useHead({
 html, body , #__nuxt {
   height: 100%;
   margin: 0;
+  color: #333;
 }
 
 body {
   margin-top: env(safe-area-inset-top);
   height: calc(100% - env(safe-area-inset-bottom));
-  //padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
+  color: #333;
 }
 
 html.dark {
