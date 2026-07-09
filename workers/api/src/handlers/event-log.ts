@@ -83,23 +83,22 @@ export async function handleCreateEventLog(env: Env, body: string | null, userId
     return error('eventName is required', 400);
   }
 
-  // Auto-stop any open Sleep event when feeding starts
-  if (data.eventName === 'Feed') {
+  // Auto-stop any open Sleep event when feeding or sleeping starts
+  if (data.eventName === 'Feed' || data.eventName === 'Sleep') {
     const openSleep = await env.DB.prepare(
       `SELECT id, extra FROM event_log
        WHERE user_id = ? AND event_name = 'Sleep'
+       AND (extra IS NULL OR extra NOT LIKE '%"endTime"%')
        ORDER BY event_time DESC LIMIT 1`
     ).bind(userId).first();
 
     if (openSleep) {
       const sleepExtra = (openSleep as any).extra ? JSON.parse((openSleep as any).extra) : {};
-      if (!sleepExtra.endTime) {
-        sleepExtra.endTime = new Date().toISOString();
-        await env.DB.prepare(
-          `UPDATE event_log SET extra = ?, updated_at = datetime('now', '+8 hours')
-           WHERE id = ?`
-        ).bind(JSON.stringify(sleepExtra), (openSleep as any).id).run();
-      }
+      sleepExtra.endTime = new Date().toISOString();
+      await env.DB.prepare(
+        `UPDATE event_log SET extra = ?, updated_at = datetime('now', '+8 hours')
+         WHERE id = ?`
+      ).bind(JSON.stringify(sleepExtra), (openSleep as any).id).run();
     }
   }
 
