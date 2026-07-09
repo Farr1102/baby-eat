@@ -137,8 +137,29 @@ const nearLastDiaper = computed(() => {
 })
 const nearLastSleep = computed(() => {
   const r = logs.value?.find(e => e.eventName === 'Sleep')
-  return r ? getDuration(r.eventTime!, currentTime.value) : '未知'
+  if (!r) return '未知'
+  const t = (r.extra as any)?.endTime || r.eventTime
+  return getDuration(t, currentTime.value)
 })
+
+// Today's sleep events
+const todayLogs = computed(() => {
+  return logs.value?.filter(e =>
+    dayjs(e.eventTime).format('YYYY-MM-DD') === dayjs().format('YYYY-MM-DD')
+  ) || []
+})
+
+const sleepTime = computed(() => {
+  const sl = todayLogs.value.filter(e => e.eventName === 'Sleep')
+  if (!sl.length) return '0 小时 0 分钟'
+  const min = sl.reduce((a, c) => {
+    const end = (c.extra as any)?.endTime
+    if (!end) return a
+    return a + dayjs(end).diff(dayjs(c.eventTime), 'minute')
+  }, 0)
+  return `${Math.floor(min / 60)} 小时 ${min % 60} 分钟`
+})
+
 onMounted(() => {
   const i = setInterval(() => { currentTime.value = new Date() }, 1000)
   onUnmounted(() => clearInterval(i))
@@ -146,12 +167,6 @@ onMounted(() => {
 
 const hasFeedAD = computed(() =>
   !!logs.value?.find(e => e.eventName === 'Supplement' && (e.extra as any)?.taken === '是'))
-const sleepTime = computed(() => {
-  const sl = logs.value?.filter(e => e.eventName === 'Sleep')
-  if (!sl?.length) return '0 小时 0 分钟'
-  const min = sl.reduce((a, c) => a + dayjs(c.extra?.endTime as any).diff(dayjs(c.eventTime), 'minute'), 0)
-  return `${Math.floor(min / 60)} 小时 ${min % 60} 分钟`
-})
 
 const dayLabels = ['一', '二', '三', '四', '五', '六', '日']
 
