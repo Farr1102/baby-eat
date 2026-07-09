@@ -34,20 +34,20 @@ export function useAuth() {
       loading.value = false;
       return;
     }
+    // Assume valid token first (instant login), verify in background
+    token.value = savedToken;
+    user.value = JSON.parse(savedUser);
+    loading.value = false;
     try {
       const res = await fetch(`${API_BASE}/auth/me`, {
         headers: { Authorization: `Bearer ${savedToken}` },
       });
-      if (res.ok) {
-        token.value = savedToken;
-        user.value = JSON.parse(savedUser);
-      } else {
+      if (!res.ok && res.status === 401) {
         clearAuth();
       }
     } catch {
-      clearAuth();
+      // Network error — keep using cached token
     }
-    loading.value = false;
   }
 
   async function login(username: string, password: string) {
