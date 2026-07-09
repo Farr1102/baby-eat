@@ -16,9 +16,15 @@ export function formatLogInfo(eventLogResult: EventLogResult) {
   }
 
   if (eventName === 'Feed') {
-    const type = FEED_MAP[extra?.type as string] || extra?.type || ''
+    let typeStr = ''
+    const t = extra?.type
+    if (Array.isArray(t)) {
+      typeStr = t.join('/')
+    } else if (t) {
+      typeStr = String(t)
+    }
     const vol = getDesc(extra?.milkVolume, 'ml')
-    const desc = `${type}${vol}`.trim()
+    const desc = `${typeStr}${vol}`.trim()
     return desc || event.displayName
   }
 

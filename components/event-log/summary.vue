@@ -127,7 +127,9 @@ const isFetching = computed(() => isFetchingTags.value || isFetchingLogs.value)
 const currentTime = ref()
 const nearLastFeed = computed(() => {
   const r = logs.value?.find(e => e.eventName === 'Feed')
-  return r ? getDuration(r.eventTime!, currentTime.value) : '未知'
+  if (!r) return '未知'
+  const t = (r.extra as any)?.endTime || r.eventTime
+  return getDuration(t, currentTime.value)
 })
 const nearLastDiaper = computed(() => {
   const r = logs.value?.find(e => e.eventName === 'Diaper')

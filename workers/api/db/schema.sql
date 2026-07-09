@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS session (
 
 -- Seed default events (baby tracking essentials)
 INSERT OR IGNORE INTO event (name, display_name, icon, extra_fields) VALUES
-('Feed', '喂养', '🍼', '[{"name":"type","displayName":"类型","type":"radio","enums":["Breast","Formula"],"userInput":true},{"name":"milkVolume","displayName":"奶量(ml)","type":"number","userInput":true}]'),
+('Feed', '喂养', '🍼', '[{"name":"type","displayName":"类型","type":"checkbox","enums":["母乳","配方奶"],"userInput":true},{"name":"milkVolume","displayName":"奶量(ml)","type":"number","userInput":true},{"name":"endTime","displayName":"结束时间","type":"time","userInput":true}]'),
 ('Diaper', '尿布', '🩲', '[{"name":"source","displayName":"类型","type":"radio","enums":["Wet","Dirty","Both"],"userInput":true}]'),
 ('Sleep', '睡眠', '😴', '[{"name":"duration","displayName":"时长(分钟)","type":"number","userInput":true}]'),
 ('Weigh', '体重', '⚖️', '[{"name":"weight","displayName":"体重(kg)","type":"number","userInput":true}]'),
