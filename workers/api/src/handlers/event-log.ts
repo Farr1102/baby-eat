@@ -13,7 +13,7 @@ export async function handleGetEventLog(env: Env, url: URL, userId: number) {
 
   if (date) {
     values.push(date);
-    sql += ' AND date(el.event_time) = date(?)';
+    sql += ' AND date(el.event_time, "+8 hours") = date(?)';
   }
   if (eventName) {
     values.push(eventName);
@@ -67,7 +67,7 @@ export async function handleGetEventLogDistinct(env: Env, url: URL, userId: numb
 
   if (date) {
     values.push(date);
-    sql += ' AND date(el.event_time) = date(?)';
+    sql += ' AND date(el.event_time, "+8 hours") = date(?)';
   }
 
   sql += ' GROUP BY el.event_name, e.display_name ORDER BY count DESC';
@@ -155,15 +155,14 @@ export async function handleDeleteEventLog(env: Env, id: string, userId: number)
 
 export async function handleGetEventLogHeatmap(env: Env, url: URL, userId: number) {
   const weeks = Math.min(parseInt(url.searchParams.get('weeks') || '20') || 20, 52);
-  const endDate = new Date();
-  const startDate = new Date();
-  startDate.setDate(startDate.getDate() - weeks * 7);
+  const endDate = new Date(Date.now() + 8 * 60 * 60 * 1000);
+  const startDate = new Date(endDate.getTime() - weeks * 7 * 24 * 60 * 60 * 1000);
 
   const { results } = await env.DB.prepare(
-    `SELECT date(event_time) as date, COUNT(*) as count
+    `SELECT date(event_time, '+8 hours') as date, COUNT(*) as count
      FROM event_log
      WHERE user_id = ? AND event_time >= ? AND event_time <= ?
-     GROUP BY date(event_time)
+     GROUP BY date(event_time, '+8 hours')
      ORDER BY date ASC`
   ).bind(userId, startDate.toISOString(), endDate.toISOString()).all();
 
