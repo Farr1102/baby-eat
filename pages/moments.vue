@@ -139,9 +139,10 @@ function deleteItem(item: GetApiMoment200DataItem) {
 </script>
 
 <template>
-  <div ref="containerRef" class="h-full w-full overflow-auto bg-#f5f5f5 pb-12">
+  <div ref="containerRef" class="h-full w-full overflow-auto pb-12" style="background: var(--app-bg)">
     <van-nav-bar
       title="动态"
+      class="glass-strong !sticky top-0 z-20"
     />
     <van-form class="px-4 pt-4" @submit="onSubmit">
       <van-field
@@ -150,7 +151,7 @@ function deleteItem(item: GetApiMoment200DataItem) {
         :rows="5"
         placeholder="说点什么吧"
         spellcheck
-        class="mb-2 rounded-xl"
+        class="compose-field mb-2 !rounded-2xl"
         :rules="[{
           required: true,
           message: '请输入内容',
@@ -205,21 +206,21 @@ function deleteItem(item: GetApiMoment200DataItem) {
       <div
         v-for="moment in moments"
         :key="moment.id"
-        class="rounded-xl bg-white p-4"
+        class="card p-4"
       >
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2.5">
           <van-image width="45" height="45" fit="cover" round :src="getUploadThumbnailURL(baby?.avatar)" />
           <div class="flex flex-1 flex-col">
-            <span class="text-pink">{{ baby?.name }}</span>
-            <span class="text-xs text-gray-4">
+            <span class="text-pink font-semibold">{{ baby?.name }}</span>
+            <span class="text-xs" style="color: var(--app-ink-3)">
               {{ formatDatetime(moment.createdAt) }}
             </span>
           </div>
-          <div>
-            <span class="cursor-pointer text-red" @click="deleteItem(moment)">
+          <div class="flex gap-3 text-sm">
+            <span class="cursor-pointer text-red transition active:scale-90" @click="deleteItem(moment)">
               删除
             </span>
-            <span class="cursor-pointer text-pink" @click="updateItem(moment)">
+            <span class="cursor-pointer text-pink transition active:scale-90" @click="updateItem(moment)">
               修改
             </span>
           </div>
@@ -271,6 +272,10 @@ function deleteItem(item: GetApiMoment200DataItem) {
 </template>
 
 <style lang="scss">
+.compose-field {
+  box-shadow: 0 1px 2px rgba(20, 20, 36, 0.04), 0 8px 24px -12px rgba(20, 20, 36, 0.1);
+}
+
 .uploader {
   width: 100%;
   display: block !important;

@@ -49,20 +49,20 @@ const { logout, user } = useAuth()
 
 <template>
   <div class="container">
-    <div class="h-[200px] bg-pink pt-50px">
+    <div class="setting-hero pt-50px pb-16">
       <div class="flex items-center gap-4 px-10%">
-        <van-image round :src="avatar" width="60" height="60" fit="cover">
+        <van-image round :src="avatar" width="64" height="64" fit="cover" class="hero-avatar">
           <template #loading>
             <van-loading type="spinner" size="20" />
           </template>
         </van-image>
-        <div class="flex flex-col justify-around">
-          <div class="text-base text-white">
+        <div class="flex flex-col justify-around gap-1">
+          <div class="text-lg text-white font-semibold tracking-tight">
             {{ baby.name }}
           </div>
-          <div class="text-sm text-#ddd">
+          <div class="text-sm text-white/80 leading-relaxed">
             Born on {{ baby.bornAt }} <br>
-            <span class="text-white">
+            <span class="text-white font-medium">
               {{ old }}
               <van-icon
                 name="info-o" @click="showToast({
@@ -73,49 +73,34 @@ const { logout, user } = useAuth()
           </div>
         </div>
       </div>
-      <div class="mt-6 flex justify-evenly text-center text-sm text-light">
-        <div @click="router.push('/setting/growth-chart')">
-          <div>
-            {{ diaperCount }}
-          </div>
-          <div>
-            尿不湿
-          </div>
+    </div>
+
+    <!-- floating stats card overlapping the hero -->
+    <div class="px-4">
+      <div class="stats-card glass-strong -mt-10 flex justify-evenly rounded-2xl py-4 text-center">
+        <div class="stat-col" @click="router.push('/setting/growth-chart')">
+          <div class="stat-num">{{ diaperCount }}</div>
+          <div class="stat-cap">尿不湿</div>
         </div>
-        <div>
-          <div>
-            {{ feedCount }}
-          </div>
-          <div>
-            喂养
-          </div>
+        <div class="stat-col">
+          <div class="stat-num">{{ feedCount }}</div>
+          <div class="stat-cap">喂养</div>
         </div>
-        <div>
-          <div>
-            {{ outCount }}
-          </div>
-          <div>
-            外出
-          </div>
+        <div class="stat-col">
+          <div class="stat-num">{{ outCount }}</div>
+          <div class="stat-cap">外出</div>
         </div>
-        <div>
-          <div>
-            {{ supplyCount }}
-          </div>
-          <div>
-            补剂
-          </div>
+        <div class="stat-col">
+          <div class="stat-num">{{ supplyCount }}</div>
+          <div class="stat-cap">补剂</div>
         </div>
-        <div>
-          <div>
-            {{ sleepCount }}
-          </div>
-          <div>
-            睡眠
-          </div>
+        <div class="stat-col">
+          <div class="stat-num">{{ sleepCount }}</div>
+          <div class="stat-cap">睡眠</div>
         </div>
       </div>
     </div>
+
     <van-cell-group inset class="!mt-4">
       <van-cell title="宝宝信息" is-link size="large" to="/setting/profile" />
       <van-cell title="喂养记录" is-link size="large" to="/setting/feed-logs" />
@@ -134,8 +119,40 @@ const { logout, user } = useAuth()
 
 <style scoped lang="scss">
 .container {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "HelveticaNeue-Light", system-ui, "Ubuntu", "Droid Sans", sans-serif;
-  background-color: #f5f5f5;
+  background: var(--app-bg);
   height: 100%;
+  overflow: auto;
+}
+
+.setting-hero {
+  background: linear-gradient(150deg, #ff7ab6 0%, #ec489a 55%, #d63384 100%);
+}
+
+.hero-avatar {
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 6px 18px -4px rgba(0, 0, 0, 0.25);
+}
+
+.stats-card {
+  box-shadow: 0 8px 28px -10px rgba(20, 20, 36, 0.22);
+}
+
+.stat-col {
+  transition: transform 0.15s ease-out;
+  cursor: pointer;
+  &:active {
+    transform: scale(0.92);
+  }
+}
+.stat-num {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--app-ink);
+}
+.stat-cap {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--app-ink-3);
 }
 </style>

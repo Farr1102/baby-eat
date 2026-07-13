@@ -24,8 +24,8 @@ onServerPrefetch(suspense)
 </script>
 
 <template>
-  <div absolute bottom-14 right-4>
-    <van-popover v-model:show="showPopover" class="!overflow-visible" placement="top-end">
+  <div absolute bottom-16 right-4>
+    <van-popover v-model:show="showPopover" class="dispatch-popover !overflow-visible !rounded-2xl" placement="top-end">
       <van-grid
         clickable
         square
@@ -36,6 +36,7 @@ onServerPrefetch(suspense)
         <van-grid-item
           v-for="event in events"
           :key="event.displayName"
+          class="dispatch-grid-item"
           @click="showEventLogCreateForm(event)"
         >
           <div class="flex justify-center">
@@ -47,7 +48,10 @@ onServerPrefetch(suspense)
         </van-grid-item>
       </van-grid>
       <template #reference>
-        <div h-14 w-14 flex items-center justify-center rounded-full bg-pink-5>
+        <div
+          class="fab h-14 w-14 flex items-center justify-center rounded-full"
+          :class="{ 'fab--open': showPopover }"
+        >
           <van-icon name="plus" :size="30" color="#fff" />
         </div>
       </template>
@@ -62,4 +66,36 @@ onServerPrefetch(suspense)
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.fab {
+  background: linear-gradient(135deg, #ff6fb0 0%, #ec489a 100%);
+  box-shadow: 0 6px 20px -4px rgba(236, 72, 154, 0.55), 0 2px 6px rgba(0, 0, 0, 0.12);
+  transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.25s ease-out;
+}
+.fab:active {
+  transform: scale(0.9);
+}
+.fab--open {
+  transform: rotate(45deg);
+}
+.fab--open:active {
+  transform: rotate(45deg) scale(0.9);
+}
+
+.dispatch-grid-item :deep(.van-grid-item__content) {
+  border-radius: 14px;
+  transition: transform 0.15s ease-out, background-color 0.15s ease-out;
+}
+.dispatch-grid-item :deep(.van-grid-item__content:active) {
+  transform: scale(0.94);
+  background-color: rgba(236, 72, 154, 0.08);
+}
+</style>
+
+<style>
+.dispatch-popover .van-popover__content {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px -8px rgba(20, 20, 36, 0.28);
+}
+</style>

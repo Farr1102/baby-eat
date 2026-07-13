@@ -187,9 +187,9 @@ const labelRow = computed(() => {
 </script>
 
 <template>
-  <div bg="#f5f5f5" h-full w-full overflow-auto pb-13>
-    <van-nav-bar title="事件记录" class="mb-4" />
-    <div class="text-center text-sm text-gray-5 mb-1">
+  <div h-full w-full overflow-auto pb-16 style="background: var(--app-bg)">
+    <van-nav-bar title="事件记录" class="summary-nav glass-strong !sticky top-0 z-20" />
+    <div class="pt-3 text-center text-sm font-medium" style="color: var(--app-ink-2)">
       {{ dayjs(activeDate).format('YYYY年M月D日 dddd') }}
       <span
         v-if="activeDate !== dayjs().format('YYYY-MM-DD')"
@@ -197,14 +197,14 @@ const labelRow = computed(() => {
         @click="activeDate = dayjs().format('YYYY-MM-DD')"
       >回到今天</span>
     </div>
-    <div v-if="babyAge" class="text-center text-xs text-pink mb-2">
+    <div v-if="babyAge" class="mt-1 text-center text-xs text-pink font-medium">
       {{ baby?.name }} · {{ babyAge }}
       <span v-if="milestones.get(activeDate)" class="text-green-600"> · {{ milestones.get(activeDate) }}</span>
     </div>
     <van-pull-refresh v-model="isRefreshing" class="overflow-visible" @refresh="onRefresh">
-      <div class="px-4">
+      <div class="px-4 pt-3">
         <!-- heatmap -->
-        <div overflow-hidden rounded-xl bg-white p-3>
+        <div overflow-hidden card p-3>
           <div class="heatmap-grid">
             <!-- top labels -->
             <div />
@@ -236,23 +236,42 @@ const labelRow = computed(() => {
         </div>
 
         <!-- stats -->
-        <div v-if="!isFetching && !activeEvent" class="mt-3 px-2 text-xs">
-          <div v-if="activeDate === dayjs().format('YYYY-MM-DD')">
-            距离上次喂养: <span class="text-pink">{{ nearLastFeed }}</span> <br>
-            距离上次换尿不湿: <span class="text-pink">{{ nearLastDiaper }}</span> <br>
-            距离上次睡觉: <span class="text-pink">{{ nearLastSleep }}</span>
+        <div v-if="!isFetching && !activeEvent" class="mt-3">
+          <div v-if="activeDate === dayjs().format('YYYY-MM-DD')" class="grid grid-cols-3 gap-2">
+            <div class="stat-tile card">
+              <div class="stat-label">距上次喂养</div>
+              <div class="stat-value">{{ nearLastFeed }}</div>
+            </div>
+            <div class="stat-tile card">
+              <div class="stat-label">距上次换尿布</div>
+              <div class="stat-value">{{ nearLastDiaper }}</div>
+            </div>
+            <div class="stat-tile card">
+              <div class="stat-label">距上次睡觉</div>
+              <div class="stat-value">{{ nearLastSleep }}</div>
+            </div>
           </div>
-          <div>AD 吃了没: <span class="text-pink">{{ hasFeedAD ? '吃了' : '没吃' }}</span></div>
-          <div>今日总计睡眠时长: <span class="text-pink">{{ sleepTime }}</span></div>
+          <div class="mt-2 grid grid-cols-2 gap-2">
+            <div class="stat-tile card">
+              <div class="stat-label">今日总睡眠</div>
+              <div class="stat-value">{{ sleepTime }}</div>
+            </div>
+            <div class="stat-tile card">
+              <div class="stat-label">AD 补充</div>
+              <div class="stat-value" :class="hasFeedAD ? 'text-green-600' : ''">
+                {{ hasFeedAD ? '已补充 ✓' : '未补充' }}
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- tags -->
-        <div v-if="!!tags?.length" mt-2 flex flex-wrap>
+        <div v-if="!!tags?.length" mt-3 flex flex-wrap>
           <van-tag
             v-for="event in tagsWithAll" :key="event.eventName"
             :text-color="event.eventName === activeEvent ? '#fff' : '#373737'"
-            round class="mb-2 mr-2 !p-1 !px-2.5"
-            :color="event.eventName === activeEvent ? '#ec489a' : '#eeeeee'"
+            round class="filter-tag mb-2 mr-2 !py-1.5 !px-3 !text-xs"
+            :color="event.eventName === activeEvent ? '#ec489a' : '#ffffff'"
             @click="activeEvent = event.eventName"
           >
             {{ event.displayName }} ({{ event.count }})
@@ -260,7 +279,7 @@ const labelRow = computed(() => {
         </div>
 
         <!-- event cards -->
-        <div v-if="!isFetching" grid grid-cols-2 mb-2 gap-2>
+        <div v-if="!isFetching" grid grid-cols-2 mb-2 mt-1 gap-2.5>
           <template v-for="log in logs" :key="log.id">
             <event-log-detail :event-log="log" />
           </template>
@@ -273,6 +292,38 @@ const labelRow = computed(() => {
 </template>
 
 <style lang="scss">
+.summary-nav {
+  :deep(.van-nav-bar__title) {
+    letter-spacing: -0.01em;
+  }
+}
+
+.stat-tile {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.stat-label {
+  font-size: 11px;
+  color: var(--app-ink-3);
+  letter-spacing: 0.01em;
+}
+.stat-value {
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--app-ink);
+}
+
+.filter-tag {
+  box-shadow: 0 1px 2px rgba(20, 20, 36, 0.06);
+  transition: transform 0.15s ease-out;
+  &:active {
+    transform: scale(0.94);
+  }
+}
+
 .heatmap-grid {
   display: grid;
   grid-template-columns: 16px repeat(19, 1fr);

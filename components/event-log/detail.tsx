@@ -98,25 +98,28 @@ export default defineComponent({
       return (
         <div
           ref={htmlRefHook}
-          class="flex select-none items-center gap-2 rounded-xl bg-white p-3"
+          class="flex select-none items-center gap-2.5 card-press p-3"
         >
           <Icon class="!aspect-square !h-unset !w-1/4" name={eventLog.value.event.icon} />
-          <div>
-            <div class="flex flex-wrap items-center gap-1 text-xs text-gray-5">
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-1 text-xs font-medium" style="color: var(--app-ink-2)">
               <span>
                 {formatLogInfo(eventLog.value)}
               </span>
               {hasEndTimeField.value && startTime.value && (
-                <div class="flex items-center gap-0.5 text-blue-6" onClick={stop}>
+                <div
+                  class="flex items-center gap-0.5 rounded-full bg-blue-50 px-1.5 py-0.5 text-blue-6"
+                  onClick={stop}
+                >
                   {getDuration(startTime.value, eventLogEndTime.value || endTime.value)}
                   {!eventLogEndTime.value && <Icon name="icon-stop" />}
                 </div>
               )}
             </div>
-            <div class="mt-1 text-0.6rem text-gray-4">
+            <div class="mt-1 text-0.6rem" style="color: var(--app-ink-3)">
               {formatDatetime(eventLog.value.eventTime!, 'HH:mm')}
             </div>
-            <div class="mt-1 whitespace-pre-wrap text-0.6rem text-gray-4">
+            <div class="mt-1 whitespace-pre-wrap text-0.6rem" style="color: var(--app-ink-3)">
               {eventLog.value.comment}
             </div>
           </div>

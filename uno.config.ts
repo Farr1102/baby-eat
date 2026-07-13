@@ -11,8 +11,13 @@ import {
 
 export default defineConfig({
   shortcuts: [
-    ['btn', 'px-4 py-1 rounded inline-block bg-teal-600 text-white cursor-pointer hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50'],
-    ['icon-btn', 'inline-block cursor-pointer select-none opacity-75 transition duration-200 ease-in-out hover:opacity-100 hover:text-teal-600'],
+    ['btn', 'px-4 py-1 rounded inline-block bg-pink-500 text-white cursor-pointer transition active:scale-96 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50'],
+    ['icon-btn', 'inline-block cursor-pointer select-none opacity-75 transition duration-200 ease-in-out hover:opacity-100 hover:text-pink-500'],
+    // Apple-style material surfaces
+    ['card', 'rounded-2xl bg-white shadow-[0_1px_2px_rgba(20,20,36,0.04),0_10px_30px_-12px_rgba(20,20,36,0.12)]'],
+    ['card-press', 'card transition-transform duration-150 ease-out active:scale-98'],
+    ['glass', 'bg-white/72 backdrop-blur-14 backdrop-saturate-180'],
+    ['glass-strong', 'bg-white/85 backdrop-blur-20 backdrop-saturate-180'],
   ],
   theme: {
     colors: {
