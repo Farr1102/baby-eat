@@ -93,15 +93,26 @@ onServerPrefetch(suspense)
 </style>
 
 <style>
+.dispatch-popover {
+  --van-popover-light-background: rgba(255, 255, 255, 0.72);
+}
 .dispatch-popover .van-popover__content {
   border-radius: 16px;
   overflow: hidden;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  transform-origin: bottom right;
   box-shadow: 0 12px 40px -8px rgba(20, 20, 36, 0.28);
 }
 .dispatch-popover .van-grid-item__content {
-  background: var(--app-surface);
+  background: transparent;
+}
+html.dark .dispatch-popover {
+  --van-popover-light-background: rgba(28, 28, 30, 0.72);
 }
 html.dark .dispatch-popover .van-popover__content {
+  background: rgba(28, 28, 30, 0.72);
   box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.6);
 }
 </style>

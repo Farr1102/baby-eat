@@ -109,6 +109,7 @@ async function onSubmit(values) {
       round
       class="form-popup"
       :style="{ position: 'absolute' }"
+      :overlay-style="{ background: 'rgba(0, 0, 0, 0.28)' }"
       teleport="#root-container"
       @close="emit('update:show', false)"
     >
@@ -201,7 +202,21 @@ async function onSubmit(values) {
 
 <style scoped lang="scss">
 .form-popup {
-  background: var(--app-bg);
+  background: rgba(242, 242, 247, 0.8);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   max-height: 85%;
+}
+
+:global(html.dark) .form-popup {
+  background: rgba(28, 28, 30, 0.78);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .form-popup {
+    background: var(--app-bg);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 </style>

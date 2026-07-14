@@ -109,4 +109,14 @@ html.dark {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Frostier, near-solid surfaces when the user reduces transparency */
+@media (prefers-reduced-transparency: reduce) {
+  .glass, .glass-strong, .tabbar-glass, .form-popup,
+  .dispatch-popover .van-popover__content {
+    background: var(--app-surface) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
 </style>

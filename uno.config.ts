@@ -16,8 +16,8 @@ export default defineConfig({
     // Apple-style material surfaces (light + dark)
     ['card', 'rounded-2xl bg-white shadow-[0_1px_2px_rgba(20,20,36,0.04),0_10px_30px_-12px_rgba(20,20,36,0.12)] dark:bg-#1c1c1e dark:shadow-[0_1px_2px_rgba(0,0,0,0.5),0_10px_30px_-12px_rgba(0,0,0,0.7)]'],
     ['card-press', 'card transition-transform duration-150 ease-out active:scale-98'],
-    ['glass', 'bg-white/72 dark:bg-#1c1c1e/72 backdrop-blur-14 backdrop-saturate-180'],
-    ['glass-strong', 'bg-white/85 dark:bg-#1c1c1e/80 backdrop-blur-20 backdrop-saturate-180'],
+    ['glass', 'bg-white/60 dark:bg-#1c1c1e/60 backdrop-blur-14 backdrop-saturate-180'],
+    ['glass-strong', 'bg-white/72 dark:bg-#1c1c1e/68 backdrop-blur-22 backdrop-saturate-180'],
   ],
   theme: {
     colors: {
