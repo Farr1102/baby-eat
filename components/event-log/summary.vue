@@ -85,8 +85,8 @@ const heatCells = computed(() => {
 })
 
 function heatColor(level: number): string {
-  // level 0 (empty) uses a CSS var so it adapts to dark mode; others keep the pink ramp
-  return ['var(--heat-empty)', '#fce4ec', '#f8bbd0', '#f48fb1', '#ec407a'][level]
+  // all levels via CSS vars so the ramp adapts to light/dark automatically
+  return `var(--heat-${level})`
 }
 
 function selectCalendarDate(date: Date) {
@@ -333,12 +333,16 @@ const labelRow = computed(() => {
   color: #fff !important;
 }
 
-:global(html.dark) .filter-tag {
+html.dark .filter-tag {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .heatmap-grid {
-  --heat-empty: #ebedf0;
+  --heat-0: #ebedf0;
+  --heat-1: #fce4ec;
+  --heat-2: #f8bbd0;
+  --heat-3: #f48fb1;
+  --heat-4: #ec407a;
   display: grid;
   grid-template-columns: 16px repeat(19, 1fr);
   gap: 2px;
@@ -346,8 +350,12 @@ const labelRow = computed(() => {
   width: 100%;
 }
 
-:global(html.dark) .heatmap-grid {
-  --heat-empty: #2c2c2e;
+html.dark .heatmap-grid {
+  --heat-0: #2c2c2e;
+  --heat-1: #43293a;
+  --heat-2: #6d3350;
+  --heat-3: #a13c67;
+  --heat-4: #d1477f;
 }
 
 .heat-cell {
@@ -371,6 +379,6 @@ const labelRow = computed(() => {
 }
 
 .heat-cell--active {
-  box-shadow: inset 0 0 0 2px var(--app-ink);
+  box-shadow: inset 0 0 0 2px var(--app-accent);
 }
 </style>

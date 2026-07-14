@@ -82,6 +82,7 @@ html.dark {
   --van-nav-bar-icon-color: #ffffff;
   --van-nav-bar-title-text-color: #ffffff;
   --van-tabbar-item-text-color: #98989f;
+  --van-tabbar-background: transparent;
   --van-border-color: #38383a;
   --van-action-sheet-background: #1c1c1e;
   --van-popover-light-background: #2c2c2e;
@@ -108,6 +109,31 @@ html.dark {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Translucent floating tab bar — content scrolls underneath */
+.tabbar-glass {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 -0.5px 0 rgba(0, 0, 0, 0.08);
+}
+.tabbar-glass::before {
+  content: "";
+  position: absolute;
+  top: -16px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: linear-gradient(to top, rgba(242, 242, 247, 0.6), transparent);
+  pointer-events: none;
+}
+html.dark .tabbar-glass {
+  background: rgba(22, 22, 24, 0.68) !important;
+  box-shadow: inset 0 0.5px 0 rgba(255, 255, 255, 0.06);
+}
+html.dark .tabbar-glass::before {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
 }
 
 /* Frostier, near-solid surfaces when the user reduces transparency */
