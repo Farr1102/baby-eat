@@ -37,12 +37,12 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center bg-#f5f5f5 px-6">
+  <div class="min-h-screen flex flex-col items-center justify-center px-6" style="background: var(--app-bg)">
     <div class="w-full max-w-sm">
-      <h1 class="text-center text-3xl font-bold text-pink-500 mb-2">
+      <h1 class="text-center text-3xl font-bold text-pink-500 mb-2 tracking-tight">
         Little Eleven
       </h1>
-      <p class="text-center text-gray-400 mb-8">
+      <p class="text-center mb-8" style="color: var(--app-ink-3)">
         宝宝成长记录
       </p>
 
@@ -79,7 +79,7 @@ async function handleSubmit() {
         </div>
       </van-form>
 
-      <p class="text-center text-gray-400 mt-6">
+      <p class="text-center mt-6" style="color: var(--app-ink-3)">
         还没有账号？
         <NuxtLink to="/register" class="text-pink-500">
           去注册

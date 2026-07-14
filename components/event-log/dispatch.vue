@@ -42,7 +42,7 @@ onServerPrefetch(suspense)
           <div class="flex justify-center">
             <Icon :preview-disabled="true" class="!w-8 !h-8" :name="event.icon" />
           </div>
-          <span class="whitespace-nowrap pt-1 text-xs text-gray-4">
+          <span class="whitespace-nowrap pt-1 text-xs" style="color: var(--app-ink-2)">
             {{ event.displayName }}
           </span>
         </van-grid-item>
@@ -97,5 +97,11 @@ onServerPrefetch(suspense)
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 12px 40px -8px rgba(20, 20, 36, 0.28);
+}
+.dispatch-popover .van-grid-item__content {
+  background: var(--app-surface);
+}
+html.dark .dispatch-popover .van-popover__content {
+  box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.6);
 }
 </style>

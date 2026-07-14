@@ -106,14 +106,16 @@ async function onSubmit(values) {
     <van-popup
       :show="show"
       position="bottom"
-      :style="{ backgroundColor: '#f5f5f5', position: 'absolute' }"
+      round
+      class="form-popup"
+      :style="{ position: 'absolute' }"
       teleport="#root-container"
       @close="emit('update:show', false)"
     >
-      <div flex px-6 pt-2 text-sm font-medium>
+      <div flex px-6 pt-4 text-base font-semibold tracking-tight>
         {{ event?.displayName }}
       </div>
-      <div px-6 pb-3 pt-1 text-xs text-gray-4>
+      <div px-6 pb-3 pt-1 text-xs style="color: var(--app-ink-3)">
         记录当下，分享未来
       </div>
       <van-form @submit="onSubmit">
@@ -188,7 +190,7 @@ async function onSubmit(values) {
           />
         </van-cell-group>
         <div style="margin: 16px;">
-          <van-button :loading="isPending" round block type="primary" native-type="submit">
+          <van-button :loading="isPending" round block color="#ec489a" native-type="submit">
             提交
           </van-button>
         </div>
@@ -198,5 +200,8 @@ async function onSubmit(values) {
 </template>
 
 <style scoped lang="scss">
-
+.form-popup {
+  background: var(--app-bg);
+  max-height: 85%;
+}
 </style>

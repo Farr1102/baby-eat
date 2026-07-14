@@ -194,7 +194,8 @@ function deleteItem(item: GetApiMoment200DataItem) {
         <van-button
           native-type="submit"
           size="small"
-          type="primary"
+          round
+          color="#ec489a"
           :loading="isPending"
         >
           {{ formValue.id ? '修改' : '发布' }}

@@ -34,8 +34,8 @@ const avatarBg = computed(() => model.gender === 1 ? '#dbeafe' : '#fce7f3')
 </script>
 
 <template>
-  <div class="h-full bg-#f5f5f5">
-    <van-nav-bar title="宝宝信息" left-arrow class="mb-4" @click-left="router.back" />
+  <div class="h-full" style="background: var(--app-bg)">
+    <van-nav-bar title="宝宝信息" left-arrow class="glass-strong !sticky top-0 z-20 mb-4" @click-left="router.back" />
     <van-form @submit="onSubmit">
       <van-cell-group inset>
         <!-- Avatar preview -->
@@ -86,7 +86,7 @@ const avatarBg = computed(() => model.gender === 1 ? '#dbeafe' : '#fce7f3')
         </client-only>
       </van-cell-group>
       <div style="margin: 16px;">
-        <van-button :loading="isPending" round block type="primary" native-type="submit">
+        <van-button :loading="isPending" round block color="#ec489a" native-type="submit">
           保存
         </van-button>
       </div>

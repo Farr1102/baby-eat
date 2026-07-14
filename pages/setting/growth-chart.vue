@@ -76,10 +76,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="h-full overflow-auto bg-#f5f5f5 pb-16">
+  <div class="h-full overflow-auto pb-16" style="background: var(--app-bg)">
     <van-nav-bar
       title="统计"
       left-arrow
+      class="glass-strong !sticky top-0 z-20"
       @click-left="router.back"
     />
     <van-tabs v-model:active="active" class="pt-4" shrink type="card">

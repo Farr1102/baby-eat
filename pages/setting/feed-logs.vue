@@ -31,10 +31,11 @@ const router = useRouter()
 </script>
 
 <template>
-  <div class="h-full overflow-auto bg-#f5f5f5">
+  <div class="h-full overflow-auto" style="background: var(--app-bg)">
     <van-nav-bar
       title="喂养记录"
       left-arrow
+      class="glass-strong !sticky top-0 z-20"
       @click-left="router.back"
     />
     <div v-if="!!tags?.length" class="ml-2 mt-4 flex flex-wrap">

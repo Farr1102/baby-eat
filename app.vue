@@ -2,17 +2,27 @@
 import { appName, iconfontUrl } from '~/constants'
 import 'vant/es/toast/style/index.mjs'
 
+const colorMode = useColorMode()
+const vantTheme = computed(() => (colorMode.value === 'dark' ? 'dark' : 'light'))
+
 useHead({
   title: appName,
+  meta: [{
+    id: 'theme-color',
+    name: 'theme-color',
+    content: () => (colorMode.value === 'dark' ? '#000000' : '#f2f2f7'),
+  }],
 })
 </script>
 
 <template>
   <VitePwaManifest />
-  <NuxtLoadingIndicator />
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <NuxtLoadingIndicator color="#ec489a" />
+  <van-config-provider :theme="vantTheme" class="h-full">
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </van-config-provider>
   <ClientOnly>
     <Script type="application/javascript" :src="iconfontUrl" :async="true" />
   </ClientOnly>
@@ -55,6 +65,27 @@ html.dark {
 
 .van-field__label {
   flex: none !important;
+}
+
+/* Vant dark theme → align with iOS elevated surfaces (#1c1c1e) instead of pure black */
+html.dark {
+  --van-background: #000000;
+  --van-background-2: #1c1c1e;
+  --van-background-3: #2c2c2e;
+  --van-text-color: #ffffff;
+  --van-text-color-2: #ebebf0;
+  --van-text-color-3: #98989f;
+  --van-cell-background: #1c1c1e;
+  --van-cell-group-background: #1c1c1e;
+  --van-field-input-text-color: #ffffff;
+  --van-field-placeholder-text-color: #98989f;
+  --van-nav-bar-icon-color: #ffffff;
+  --van-nav-bar-title-text-color: #ffffff;
+  --van-tabbar-item-text-color: #98989f;
+  --van-border-color: #38383a;
+  --van-action-sheet-background: #1c1c1e;
+  --van-popover-light-background: #2c2c2e;
+  --van-popover-light-text-color: #ffffff;
 }
 
 /* Slightly rounder, softer Vant chrome to match iOS materials */

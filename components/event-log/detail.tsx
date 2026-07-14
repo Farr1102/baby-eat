@@ -108,7 +108,7 @@ export default defineComponent({
               </span>
               {hasEndTimeField.value && startTime.value && (
                 <div
-                  class="flex items-center gap-0.5 rounded-full bg-blue-50 px-1.5 py-0.5 text-blue-6"
+                  class="flex items-center gap-0.5 rounded-full bg-blue-50 px-1.5 py-0.5 text-blue-6 dark:bg-blue-500/20 dark:text-blue-3"
                   onClick={stop}
                 >
                   {getDuration(startTime.value, eventLogEndTime.value || endTime.value)}

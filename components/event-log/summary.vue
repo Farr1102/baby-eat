@@ -85,7 +85,8 @@ const heatCells = computed(() => {
 })
 
 function heatColor(level: number): string {
-  return ['#ebedf0', '#fce4ec', '#f8bbd0', '#f48fb1', '#ec407a'][level]
+  // level 0 (empty) uses a CSS var so it adapts to dark mode; others keep the pink ramp
+  return ['var(--heat-empty)', '#fce4ec', '#f8bbd0', '#f48fb1', '#ec407a'][level]
 }
 
 function selectCalendarDate(date: Date) {
@@ -211,12 +212,13 @@ const labelRow = computed(() => {
             <div
               v-for="(lb, i) in labelRow"
               :key="i"
-              class="text-8px text-gray-3 text-center"
+              class="text-8px text-center"
+              style="color: var(--app-ink-3)"
             >{{ lb }}</div>
 
             <!-- day rows -->
             <template v-for="row in 7" :key="row">
-              <div class="text-8px text-gray-4 text-right pr-1">{{ dayLabels[row - 1] }}</div>
+              <div class="text-8px text-right pr-1" style="color: var(--app-ink-3)">{{ dayLabels[row - 1] }}</div>
               <div
                 v-for="(cell, ci) in heatCells.filter((_, i) => i % 7 === (row - 1) % 7)"
                 :key="ci"
@@ -269,9 +271,10 @@ const labelRow = computed(() => {
         <div v-if="!!tags?.length" mt-3 flex flex-wrap>
           <van-tag
             v-for="event in tagsWithAll" :key="event.eventName"
-            :text-color="event.eventName === activeEvent ? '#fff' : '#373737'"
-            round class="filter-tag mb-2 mr-2 !py-1.5 !px-3 !text-xs"
-            :color="event.eventName === activeEvent ? '#ec489a' : '#ffffff'"
+            round
+            class="filter-tag mb-2 mr-2 !py-1.5 !px-3 !text-xs"
+            :class="event.eventName === activeEvent ? 'filter-tag--active' : ''"
+            :color="event.eventName === activeEvent ? '#ec489a' : 'transparent'"
             @click="activeEvent = event.eventName"
           >
             {{ event.displayName }} ({{ event.count }})
@@ -317,19 +320,34 @@ const labelRow = computed(() => {
 }
 
 .filter-tag {
+  background: var(--app-surface) !important;
+  color: var(--app-ink-2) !important;
   box-shadow: 0 1px 2px rgba(20, 20, 36, 0.06);
   transition: transform 0.15s ease-out;
   &:active {
     transform: scale(0.94);
   }
 }
+.filter-tag--active {
+  background: #ec489a !important;
+  color: #fff !important;
+}
+
+:global(html.dark) .filter-tag {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
 
 .heatmap-grid {
+  --heat-empty: #ebedf0;
   display: grid;
   grid-template-columns: 16px repeat(19, 1fr);
   gap: 2px;
   align-items: center;
   width: 100%;
+}
+
+:global(html.dark) .heatmap-grid {
+  --heat-empty: #2c2c2e;
 }
 
 .heat-cell {
@@ -353,6 +371,6 @@ const labelRow = computed(() => {
 }
 
 .heat-cell--active {
-  box-shadow: inset 0 0 0 2px #333;
+  box-shadow: inset 0 0 0 2px var(--app-ink);
 }
 </style>

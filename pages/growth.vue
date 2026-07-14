@@ -53,10 +53,14 @@ const h_data = girlHeight.slice(0, 12).reduce((acc, cur) => {
 const w_container = ref<HTMLElement>(null!)
 const h_container = ref<HTMLElement>(null!)
 
+const colorMode = useColorMode()
+
 onMounted(() => {
+  const g2Theme = () => (colorMode.value === 'dark' ? 'classicDark' : 'classic')
   const w_chart = new Chart({
     container: w_container.value,
     autoFit: true,
+    theme: g2Theme(),
   })
   w_chart
     .line()
@@ -85,6 +89,7 @@ onMounted(() => {
   const h_chart = new Chart({
     container: h_container.value,
     autoFit: true,
+    theme: g2Theme(),
   })
   h_chart
     .line()
@@ -110,6 +115,13 @@ onMounted(() => {
     })
   h_chart.render()
 
+  watch(colorMode, () => {
+    w_chart.theme({ type: g2Theme() })
+    h_chart.theme({ type: g2Theme() })
+    w_chart.render()
+    h_chart.render()
+  })
+
   watchEffect(() => {
     if (!data.value || !baby.value)
       return
@@ -133,12 +145,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="h-full overflow-auto bg-#f5f5f5 pb-12">
+  <div class="h-full overflow-auto pb-12" style="background: var(--app-bg)">
     <van-nav-bar
       title="健康曲线"
+      class="glass-strong !sticky top-0 z-20"
     />
-    <div ref="w_container" class="my-4 h-40% bg-white" />
-    <div ref="h_container" class="h-40% bg-white" />
+    <div class="px-4 pt-4">
+      <div ref="w_container" class="card mb-4 h-[38vh] p-2" />
+      <div ref="h_container" class="card h-[38vh] p-2" />
+    </div>
   </div>
 </template>
 

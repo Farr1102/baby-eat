@@ -137,10 +137,11 @@ function deleteItem(item: GetApiMoment200DataItem) {
 </script>
 
 <template>
-  <div ref="containerRef" class="h-full w-full overflow-auto bg-#f5f5f5 pb-12">
+  <div ref="containerRef" class="h-full w-full overflow-auto pb-12" style="background: var(--app-bg)">
     <van-nav-bar
       title="反馈"
       left-arrow
+      class="glass-strong !sticky top-0 z-20"
       @click-left="() => $router.back()"
     />
     <van-form class="px-4 pt-4" @submit="onSubmit">
@@ -193,7 +194,8 @@ function deleteItem(item: GetApiMoment200DataItem) {
         <van-button
           native-type="submit"
           size="small"
-          type="primary"
+          round
+          color="#ec489a"
           :loading="isPending"
         >
           {{ formValue.id ? '修改' : '发布' }}
@@ -205,13 +207,13 @@ function deleteItem(item: GetApiMoment200DataItem) {
       <div
         v-for="moment in moments"
         :key="moment.id"
-        class="rounded-xl bg-white p-4"
+        class="card p-4"
       >
         <div class="flex items-center gap-2">
           <van-image width="45" height="45" fit="cover" round src="" />
           <div class="flex flex-1 flex-col">
             <span class="text-pink">Nickname</span>
-            <span class="text-xs text-gray-4">
+            <span class="text-xs" style="color: var(--app-ink-3)">
               {{ formatDatetime(moment.createdAt) }}
             </span>
           </div>
