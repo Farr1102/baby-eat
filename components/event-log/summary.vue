@@ -194,11 +194,11 @@ const labelRow = computed(() => {
       {{ dayjs(activeDate).format('YYYY年M月D日 dddd') }}
       <span
         v-if="activeDate !== dayjs().format('YYYY-MM-DD')"
-        class="ml-2 text-xs text-pink cursor-pointer"
+        class="ml-2 text-xs text-brand cursor-pointer active:opacity-70"
         @click="activeDate = dayjs().format('YYYY-MM-DD')"
       >回到今天</span>
     </div>
-    <div v-if="babyAge" class="mt-1 text-center text-xs text-pink font-medium">
+    <div v-if="babyAge" class="mt-1 text-center text-xs text-brand font-medium">
       {{ baby?.name }} · {{ babyAge }}
       <span v-if="milestones.get(activeDate)" class="text-green-600"> · {{ milestones.get(activeDate) }}</span>
     </div>
@@ -329,7 +329,7 @@ const labelRow = computed(() => {
   }
 }
 .filter-tag--active {
-  background: #ec489a !important;
+  background: var(--app-accent) !important;
   color: #fff !important;
 }
 

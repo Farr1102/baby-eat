@@ -38,13 +38,12 @@ const router = useRouter()
       class="glass-strong !sticky top-0 z-20"
       @click-left="router.back"
     />
-    <div v-if="!!tags?.length" class="ml-2 mt-4 flex flex-wrap">
+    <div v-if="!!tags?.length" class="flex flex-wrap px-4 pt-4">
       <van-tag
         v-for="event in tagsWithAll" :key="event.eventName"
-        :text-color="event.eventName === activeEvent ? '#fff' : '#373737'"
         round
-        class="mb-2 mr-2 !p-1 !px-2.5"
-        :color="event.eventName === activeEvent ? '#ec489a' : '#eeeeee'"
+        class="filter-tag mb-2 mr-2 !py-1.5 !px-3 !text-xs"
+        :class="event.eventName === activeEvent ? 'filter-tag--active' : ''"
         @click="activeEvent = event.eventName"
       >
         {{ event.displayName }} ({{ event.count }})
@@ -57,5 +56,21 @@ const router = useRouter()
 </template>
 
 <style scoped lang="scss">
+.filter-tag {
+  background: var(--app-surface) !important;
+  color: var(--app-ink-2) !important;
+  box-shadow: 0 1px 2px rgba(20, 20, 36, 0.06);
+  transition: transform 0.15s ease-out;
+  &:active {
+    transform: scale(0.94);
+  }
+}
+.filter-tag--active {
+  background: var(--app-accent) !important;
+  color: #fff !important;
+}
 
+html.dark .filter-tag {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
 </style>

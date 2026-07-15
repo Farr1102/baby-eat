@@ -25,10 +25,15 @@ const chartContainer = ref()
 
 const store = useFontLoad()
 
+const colorMode = useColorMode()
+
 function renderChart() {
+  const isDark = colorMode.value === 'dark'
+  const tickStroke = isDark ? '#48484a' : '#cdcdcd'
   const chart = new Chart({
     container: chartContainer.value,
     autoFit: true,
+    theme: isDark ? 'classicDark' : 'classic',
   })
   chart
     .line()
@@ -38,11 +43,11 @@ function renderChart() {
     })
     .encode('y', 'count')
     .axis('x', {
-      tickStroke: '#cdcdcd',
+      tickStroke,
       label: false,
     })
     .axis('y', {
-      tickStroke: '#cdcdcd',
+      tickStroke,
       titleFontFamily: 'Gaegu',
       labelFontFamily: 'Gaegu',
       title: 'Feed Count',
@@ -55,6 +60,8 @@ function renderChart() {
 
 onMounted(() => {
   watchEffect((onCleanup) => {
+    // read colorMode so switching theme rebuilds the chart
+    void colorMode.value
     if (store.loaded && data.value) {
       const c = renderChart()
       onCleanup(() => {

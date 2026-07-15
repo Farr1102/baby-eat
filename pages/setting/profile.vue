@@ -30,7 +30,8 @@ function onSubmit() {
 }
 
 const avatarEmoji = computed(() => model.gender === 1 ? '👦' : '👧')
-const avatarBg = computed(() => model.gender === 1 ? '#dbeafe' : '#fce7f3')
+// semi-transparent tint adapts to light/dark instead of a fixed pale block
+const avatarBg = computed(() => model.gender === 1 ? 'rgba(59, 130, 246, 0.18)' : 'rgba(236, 72, 154, 0.18)')
 </script>
 
 <template>

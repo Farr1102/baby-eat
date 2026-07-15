@@ -182,7 +182,7 @@ function deleteItem(item: GetApiMoment200DataItem) {
         </template>
       </van-uploader>
       <div class="flex items-center justify-end gap-2">
-        <span class="text-xs text-pink" @click="uploaderRef.chooseFile()">上传文件</span>
+        <span class="text-xs text-brand" @click="uploaderRef.chooseFile()">上传文件</span>
         <van-button
           v-if="formValue.id"
           type="warning"
@@ -209,19 +209,24 @@ function deleteItem(item: GetApiMoment200DataItem) {
         :key="moment.id"
         class="card p-4"
       >
-        <div class="flex items-center gap-2">
-          <van-image width="45" height="45" fit="cover" round src="" />
+        <div class="flex items-center gap-2.5">
+          <div
+            class="h-11 w-11 flex items-center justify-center rounded-full text-xl"
+            style="background: rgba(236, 72, 154, 0.18)"
+          >
+            💬
+          </div>
           <div class="flex flex-1 flex-col">
-            <span class="text-pink">Nickname</span>
+            <span class="text-brand font-semibold">我的反馈</span>
             <span class="text-xs" style="color: var(--app-ink-3)">
               {{ formatDatetime(moment.createdAt) }}
             </span>
           </div>
-          <div>
-            <span class="cursor-pointer text-red" @click="deleteItem(moment)">
+          <div class="flex gap-3 text-sm">
+            <span class="cursor-pointer text-red transition active:scale-90" @click="deleteItem(moment)">
               删除
             </span>
-            <span class="cursor-pointer text-pink" @click="updateItem(moment)">
+            <span class="cursor-pointer text-brand transition active:scale-90" @click="updateItem(moment)">
               修改
             </span>
           </div>

@@ -21,6 +21,12 @@ export default defineConfig({
   ],
   theme: {
     colors: {
+      brand: {
+        DEFAULT: '#ec489a',
+        50: '#fdf2f8',
+        light: '#f472b6',
+        dark: '#d1477f',
+      },
       gray: {
         50: '#fafafa',
         100: '#f5f5f5',

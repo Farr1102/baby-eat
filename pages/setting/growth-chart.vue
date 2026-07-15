@@ -11,6 +11,8 @@ const { data, suspense } = useGetApiEventLog()
 onServerPrefetch(suspense)
 
 const active = ref(0)
+const colorMode = useColorMode()
+const tabTitles = ['Day', 'Week', 'Month', 'Year']
 
 const chart_data = computed(() => {
   if (!data.value)
@@ -49,6 +51,7 @@ onMounted(async () => {
     const chart = new Chart({
       container: container.value,
       autoFit: true,
+      theme: colorMode.value === 'dark' ? 'classicDark' : 'classic',
     })
     // 直方图
     chart
@@ -83,16 +86,37 @@ onMounted(async () => {
       class="glass-strong !sticky top-0 z-20"
       @click-left="router.back"
     />
-    <van-tabs v-model:active="active" class="pt-4" shrink type="card">
-      <van-tab title="Day" />
-      <van-tab title="Week" />
-      <van-tab title="Month" />
-      <van-tab title="Year" />
-    </van-tabs>
+    <div class="flex flex-wrap gap-2 px-4 pt-4">
+      <span
+        v-for="(t, i) in tabTitles"
+        :key="t"
+        class="seg-tag"
+        :class="active === i ? 'seg-tag--active' : ''"
+        @click="active = i"
+      >
+        {{ t }}
+      </span>
+    </div>
     <div ref="container" />
   </div>
 </template>
 
 <style scoped lang="scss">
-
+.seg-tag {
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+  background: var(--app-surface);
+  color: var(--app-ink-2);
+  box-shadow: 0 1px 2px rgba(20, 20, 36, 0.06);
+  transition: transform 0.15s ease-out;
+  &:active {
+    transform: scale(0.94);
+  }
+}
+.seg-tag--active {
+  background: var(--app-accent);
+  color: #fff;
+}
 </style>

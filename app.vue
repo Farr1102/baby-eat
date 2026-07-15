@@ -87,6 +87,9 @@ html.dark {
   --van-action-sheet-background: #1c1c1e;
   --van-popover-light-background: #2c2c2e;
   --van-popover-light-text-color: #ffffff;
+  --van-uploader-upload-background: #2c2c2e;
+  --van-uploader-upload-active-color: #3a3a3c;
+  --van-uploader-icon-color: #98989f;
 }
 
 /* Slightly rounder, softer Vant chrome to match iOS materials */

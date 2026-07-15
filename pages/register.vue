@@ -48,7 +48,7 @@ async function handleSubmit() {
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center px-6" style="background: var(--app-bg)">
     <div class="w-full max-w-sm">
-      <h1 class="text-center text-3xl font-bold text-pink-500 mb-2 tracking-tight">
+      <h1 class="text-center text-3xl font-bold text-brand mb-2 tracking-tight">
         Little Eleven
       </h1>
       <p class="text-center mb-8" style="color: var(--app-ink-3)">
@@ -98,7 +98,7 @@ async function handleSubmit() {
 
       <p class="text-center mt-6" style="color: var(--app-ink-3)">
         已有账号？
-        <NuxtLink to="/login" class="text-pink-500">
+        <NuxtLink to="/login" class="text-brand active:opacity-70">
           去登录
         </NuxtLink>
       </p>
