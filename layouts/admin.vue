@@ -74,7 +74,7 @@ const store = useLayoutStore()
     box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
     position: relative;
     z-index: 13;
-    transition: all 0.2s ease-in-out;
+    transition: width 0.2s var(--ease-in-out), box-shadow 0.2s var(--ease-out);
   }
 
   .layout-content {

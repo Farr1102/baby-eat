@@ -282,11 +282,11 @@ const labelRow = computed(() => {
         </div>
 
         <!-- event cards -->
-        <div v-if="!isFetching" grid grid-cols-2 mb-2 mt-1 gap-2.5>
-          <template v-for="log in logs" :key="log.id">
+        <TransitionGroup v-if="!isFetching" name="cards" tag="div" grid grid-cols-2 mb-2 mt-1 gap-2.5>
+          <div v-for="log in logs" :key="log.id" class="card-item">
             <event-log-detail :event-log="log" />
-          </template>
-        </div>
+          </div>
+        </TransitionGroup>
         <van-loading v-if="isFetching" color="#ec489a" vertical mt-4>加载中...</van-loading>
         <van-empty v-else-if="!logs?.length" description="当天没有记录哦～" />
       </div>
@@ -295,6 +295,33 @@ const labelRow = computed(() => {
 </template>
 
 <style lang="scss">
+/* Event cards crossfade + stagger on date/filter switch */
+.card-item {
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.cards-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.cards-leave-to {
+  opacity: 0;
+  transform: scale(0.97);
+}
+.cards-leave-active {
+  position: absolute;
+}
+@for $i from 1 through 10 {
+  .card-item:nth-child(#{$i}).cards-enter-active {
+    transition-delay: #{($i - 1) * 30}ms;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cards-enter-from,
+  .cards-leave-to {
+    transform: none !important;
+  }
+}
+
 .summary-nav {
   :deep(.van-nav-bar__title) {
     letter-spacing: -0.01em;
@@ -323,7 +350,7 @@ const labelRow = computed(() => {
   background: var(--app-surface) !important;
   color: var(--app-ink-2) !important;
   box-shadow: 0 1px 2px rgba(20, 20, 36, 0.06);
-  transition: transform 0.15s ease-out;
+  transition: transform var(--dur-press) var(--ease-out);
   &:active {
     transform: scale(0.94);
   }

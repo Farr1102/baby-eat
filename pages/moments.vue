@@ -202,12 +202,12 @@ function deleteItem(item: GetApiMoment200DataItem) {
         </van-button>
       </div>
     </van-form>
-    <div v-if="!isFetching" class="p-4 space-y-4">
-      <van-empty v-if="!moments?.length" description="还没有动态哦，快去发布吧～" />
+    <TransitionGroup v-if="!isFetching" name="list" tag="div" class="p-4 space-y-4">
+      <van-empty v-if="!moments?.length" key="empty" description="还没有动态哦，快去发布吧～" />
       <div
         v-for="moment in moments"
         :key="moment.id"
-        class="card p-4"
+        class="card list-item p-4"
       >
         <div class="flex items-center gap-2.5">
           <van-image width="45" height="45" fit="cover" round :src="getUploadThumbnailURL(baby?.avatar)" />
@@ -265,7 +265,7 @@ function deleteItem(item: GetApiMoment200DataItem) {
           </template>
         </div>
       </div>
-    </div>
+    </TransitionGroup>
     <van-loading v-else color="#ec489a" vertical mt-4>
       加载中...
     </van-loading>
@@ -273,6 +273,33 @@ function deleteItem(item: GetApiMoment200DataItem) {
 </template>
 
 <style lang="scss">
+/* Staggered list entry — decorative, never blocks interaction */
+.list-item {
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.list-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.list-leave-to {
+  opacity: 0;
+  transform: scale(0.96);
+}
+.list-leave-active {
+  position: absolute;
+}
+@for $i from 1 through 8 {
+  .list-item:nth-child(#{$i}).list-enter-active {
+    transition-delay: #{($i - 1) * 40}ms;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .list-enter-from,
+  .list-leave-to {
+    transform: none !important;
+  }
+}
+
 .compose-field {
   box-shadow: 0 1px 2px rgba(20, 20, 36, 0.04), 0 8px 24px -12px rgba(20, 20, 36, 0.1);
 }

@@ -120,7 +120,7 @@ function avatarSelect(key) {
   padding: 0;
   height: 64px;
   box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
-  transition: all 0.2s ease-in-out;
+  transition: box-shadow 0.2s var(--ease-out), background-color 0.2s var(--ease-out);
   width: 100%;
   z-index: 11;
 
@@ -184,7 +184,7 @@ function avatarSelect(key) {
     height: 64px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s ease-in-out;
+    transition: background-color 0.2s var(--ease-out);
 
     .n-icon {
       display: flex;

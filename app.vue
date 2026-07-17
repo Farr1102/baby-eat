@@ -36,6 +36,14 @@ useHead({
   --app-ink-2: #3a3a3c;
   --app-ink-3: #8e8e93;
   --app-accent: #ec489a;
+
+  /* Motion tokens — strong curves, iOS-like. UI stays under 300ms. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-press: 140ms;
+  --dur-fast: 200ms;
+  --dur-page: 260ms;
 }
 
 html, body , #__nuxt {
@@ -101,16 +109,35 @@ html.dark {
   letter-spacing: -0.01em;
 }
 .van-button {
-  transition: transform 0.15s ease-out, opacity 0.15s ease-out;
+  transition: transform var(--dur-press) var(--ease-out), opacity var(--dur-press) var(--ease-out);
 }
 .van-button:active {
   transform: scale(0.97);
+}
+
+/* Page route transition — brief fade + lift, out-in (old page leaves before new enters) */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity var(--dur-page) var(--ease-out), transform var(--dur-page) var(--ease-out);
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
 }
 
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+  /* Keep a gentle fade, drop all positional movement */
+  .page-enter-from,
+  .page-leave-to {
+    transform: none !important;
   }
 }
 

@@ -60,7 +60,7 @@ const router = useRouter()
   background: var(--app-surface) !important;
   color: var(--app-ink-2) !important;
   box-shadow: 0 1px 2px rgba(20, 20, 36, 0.06);
-  transition: transform 0.15s ease-out;
+  transition: transform var(--dur-press) var(--ease-out);
   &:active {
     transform: scale(0.94);
   }

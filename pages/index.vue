@@ -7,6 +7,8 @@ const summaryRef = ref<{
 </script>
 
 <template>
-  <event-log-summary ref="summaryRef" />
-  <event-log-dispatch @success="summaryRef?.refresh" />
+  <div class="relative h-full w-full">
+    <event-log-summary ref="summaryRef" />
+    <event-log-dispatch @success="summaryRef?.refresh" />
+  </div>
 </template>

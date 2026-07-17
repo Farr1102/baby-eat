@@ -20,6 +20,14 @@ To run the app in development mode, please run the following command in your ter
 pnpm dev
 ```
 
+### 测试账号 (Test Account)
+
+用于本地开发 / UI 实测的测试账号（数据在生产 Worker 库中）：
+
+| 用户名 | 密码 |
+| --- | --- |
+| `testuser` | `test123456` |
+
 ## Server API
 
 The server API is available at the following URL: https://github.com/powerfulyang/cloudflare-worker

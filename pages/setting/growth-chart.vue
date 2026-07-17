@@ -110,7 +110,7 @@ onMounted(async () => {
   background: var(--app-surface);
   color: var(--app-ink-2);
   box-shadow: 0 1px 2px rgba(20, 20, 36, 0.06);
-  transition: transform 0.15s ease-out;
+  transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
   &:active {
     transform: scale(0.94);
   }

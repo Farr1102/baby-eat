@@ -50,7 +50,7 @@ router.beforeEach((to, from, next) => {
 }
 
 :deep(.van-tabbar-item__icon) {
-  transition: transform 0.3s cubic-bezier(0.34, 1.4, 0.64, 1);
+  transition: transform 0.3s var(--ease-spring);
 }
 :deep(.van-tabbar-item--active .van-tabbar-item__icon) {
   transform: scale(1.12);

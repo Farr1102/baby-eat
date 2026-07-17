@@ -70,21 +70,21 @@ onServerPrefetch(suspense)
 .fab {
   background: linear-gradient(135deg, #ff6fb0 0%, #ec489a 100%);
   box-shadow: 0 6px 20px -4px rgba(236, 72, 154, 0.55), 0 2px 6px rgba(0, 0, 0, 0.12);
-  transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.25s ease-out;
+  transition: transform 0.35s var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out);
 }
 .fab:active {
-  transform: scale(0.9);
+  transform: scale(0.95);
 }
 .fab--open {
   transform: rotate(45deg);
 }
 .fab--open:active {
-  transform: rotate(45deg) scale(0.9);
+  transform: rotate(45deg) scale(0.95);
 }
 
 .dispatch-grid-item :deep(.van-grid-item__content) {
   border-radius: 14px;
-  transition: transform 0.15s ease-out, background-color 0.15s ease-out;
+  transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-press) var(--ease-out);
 }
 .dispatch-grid-item :deep(.van-grid-item__content:active) {
   transform: scale(0.94);

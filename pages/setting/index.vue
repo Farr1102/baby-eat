@@ -58,10 +58,10 @@ const { logout, user } = useAuth()
         </van-image>
         <div class="flex flex-col justify-around gap-1">
           <div class="text-lg text-white font-semibold tracking-tight">
-            {{ baby.name }}
+            {{ baby?.name }}
           </div>
           <div class="text-sm text-white/80 leading-relaxed">
-            Born on {{ baby.bornAt }} <br>
+            Born on {{ baby?.bornAt }} <br>
             <span class="text-white font-medium">
               {{ old }}
               <van-icon
@@ -138,10 +138,10 @@ const { logout, user } = useAuth()
 }
 
 .stat-col {
-  transition: transform 0.15s ease-out;
+  transition: transform var(--dur-press) var(--ease-out);
   cursor: pointer;
   &:active {
-    transform: scale(0.92);
+    transform: scale(0.96);
   }
 }
 .stat-num {
